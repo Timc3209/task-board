@@ -1,6 +1,7 @@
 import React from "react";
 import { HashRouter, Switch } from "react-router-dom";
 import { connect } from "react-redux";
+import Settings from "./scenes/Settings";
 import TaskBoard from "./scenes/TaskBoard";
 import Login from "./scenes/Login";
 import LoginRoute from "./components/LoginRoute";
@@ -27,6 +28,11 @@ class App extends React.Component<Props, States> {
           <ProtectedRoute
             path="/taskBoard"
             component={TaskBoard}
+            loggedIn={this.props.loggedIn}
+          />
+          <ProtectedRoute
+            path="/settings"
+            component={Settings}
             loggedIn={this.props.loggedIn}
           />
         </Switch>
