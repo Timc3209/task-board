@@ -17,3 +17,15 @@
   margin: auto;
   height: 100%;
 }
+
+.section {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 15px;
+}
+
+.btn-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}

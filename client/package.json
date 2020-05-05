@@ -5,6 +5,8 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
+    "react-bootstrap-table-next": "^4.0.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
@@ -21,6 +23,8 @@
     "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
+    "@types/react-beautiful-dnd": "^12.1.2",
+    "@types/react-bootstrap-table-next": "^4.0.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.1.5",

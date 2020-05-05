@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { logout } from "../redux/actions";
+import { MainState } from "../redux/types";
 import {
   Collapse,
   Navbar,
@@ -9,38 +12,87 @@ import {
   NavItem,
 } from "reactstrap";
 
-const Header = (props: any) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+interface Props {
+  logout: typeof logout;
+}
 
-  return (
-    <Navbar color="light" light expand="md">
-      <NavbarBrand href="/">Task Board</NavbarBrand>
-      <NavbarToggler onClick={toggle} />
-      <Collapse isOpen={isOpen} navbar className="justify-content-end">
-        <Nav navbar>
-          <NavItem>
-            <NavLink
-              to="/taskBoard"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Home
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              to="/settings"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Settings
-            </NavLink>
-          </NavItem>
-        </Nav>
-      </Collapse>
-    </Navbar>
-  );
+interface States {
+  isOpen: boolean;
+}
+
+class Header extends React.Component<Props, States> {
+  readonly state: States = {
+    isOpen: false,
+  };
+
+  toggle = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  doLogout = () => {
+    this.props.logout();
+  };
+
+  render() {
+    const { isOpen } = this.state;
+    return (
+      <Navbar color="light" light expand="md">
+        <NavbarBrand href="/">Task Board</NavbarBrand>
+        <NavbarToggler onClick={this.toggle} />
+        <Collapse isOpen={isOpen} navbar className="justify-content-end">
+          <Nav navbar>
+            <NavItem>
+              <NavLink
+                to="/taskBoard"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Home
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                to="/boards"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Boards
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                to="/users"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Users
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                onClick={this.doLogout}
+                exact
+                to="#"
+                className="nav-link"
+                activeClassName="logout"
+              >
+                Logout
+              </NavLink>
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
+    );
+  }
+}
+
+const mapStateToProps = ({ auth }: MainState) => {
+  const { loggedIn } = auth;
+  return { loggedIn };
 };
 
-export default Header;
+const mapDispatchToProps = {
+  logout,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

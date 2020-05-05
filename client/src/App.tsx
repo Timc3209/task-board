@@ -1,7 +1,8 @@
 import React from "react";
 import { HashRouter, Switch } from "react-router-dom";
 import { connect } from "react-redux";
-import Settings from "./scenes/Settings";
+import Boards from "./scenes/Boards";
+import Users from "./scenes/Users";
 import TaskBoard from "./scenes/TaskBoard";
 import Login from "./scenes/Login";
 import LoginRoute from "./components/LoginRoute";
@@ -31,8 +32,13 @@ class App extends React.Component<Props, States> {
             loggedIn={this.props.loggedIn}
           />
           <ProtectedRoute
-            path="/settings"
-            component={Settings}
+            path="/boards"
+            component={Boards}
+            loggedIn={this.props.loggedIn}
+          />
+          <ProtectedRoute
+            path="/users"
+            component={Users}
             loggedIn={this.props.loggedIn}
           />
         </Switch>
