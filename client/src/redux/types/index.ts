@@ -9,7 +9,7 @@ export interface TaskItemState {
 export interface TaskListState {
   id: string;
   name: string;
-  task?: Array<TaskItemState>;
+  tasks?: Array<TaskItemState>;
 }
 
 export interface BoardState {

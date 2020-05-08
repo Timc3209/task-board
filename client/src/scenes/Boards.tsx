@@ -1,11 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Button } from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
+import { v4 as uuidv4 } from "uuid";
 import { logout, addBoard, editBoard, deleteBoard } from "../redux/actions";
 import { MainState, BoardState } from "../redux/types";
 import Header from "../components/Header";
 import TextInput from "../components/TextInput";
-import BootstrapTable from "react-bootstrap-table-next";
+import CrudModal from "../components/CrudModal";
 
 interface Props {
   boards: Array<BoardState>;
@@ -70,11 +72,10 @@ class Boards extends React.Component<Props, States> {
       return false;
     }
 
-    const length = this.props.boards.length;
-    const id = length + 1;
+    const id = uuidv4();
 
     const data: BoardState = {
-      id: `${id}`,
+      id: id,
       name: boardName,
       taskList: [],
     };
@@ -186,29 +187,25 @@ class Boards extends React.Component<Props, States> {
             columns={columns}
           />
         </div>
-        <Modal isOpen={modalOpen}>
-          <ModalHeader toggle={this.closeModal}>
-            {modalAction} Board
-          </ModalHeader>
-          <ModalBody>
-            {modalAction === "Delete" ? (
-              <p>Board: {boardName}</p>
-            ) : (
-              <TextInput
-                name="boardName"
-                label="Board Name"
-                type="text"
-                value={boardName}
-                onChange={this.onChange}
-              />
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.submitModal}>
-              {modalAction === "Edit" ? "Save" : modalAction}
-            </Button>
-          </ModalFooter>
-        </Modal>
+        <CrudModal
+          modalOpen={modalOpen}
+          modalAction={modalAction}
+          modalType="Board"
+          submitModal={this.submitModal}
+          closeModal={this.closeModal}
+        >
+          {modalAction === "Delete" ? (
+            <p>Board: {boardName}</p>
+          ) : (
+            <TextInput
+              name="boardName"
+              label="Board Name"
+              type="text"
+              value={boardName}
+              onChange={this.onChange}
+            />
+          )}
+        </CrudModal>
       </div>
     );
   }

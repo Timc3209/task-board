@@ -61,15 +61,6 @@ class Header extends React.Component<Props, States> {
             </NavItem>
             <NavItem>
               <NavLink
-                to="/users"
-                className="nav-link"
-                activeClassName="active"
-              >
-                Users
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
                 onClick={this.doLogout}
                 exact
                 to="#"
