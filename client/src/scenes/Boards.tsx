@@ -2,15 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import { v4 as uuidv4 } from "uuid";
-import { logout, addBoard, editBoard, deleteBoard } from "../redux/actions";
+import { loadBoards, addBoard, editBoard, deleteBoard } from "../redux/actions";
 import { MainState, BoardState } from "../redux/types";
 import Header from "../components/Header";
 import TextInput from "../components/TextInput";
 import CrudModal from "../components/CrudModal";
+import { fetchApi } from "../lib/api";
 
 interface Props {
   boards: Array<BoardState>;
+  loadBoards: typeof loadBoards;
   addBoard: typeof addBoard;
   editBoard: typeof editBoard;
   deleteBoard: typeof deleteBoard;
@@ -31,6 +32,19 @@ class Boards extends React.Component<Props, States> {
     modalAction: "",
   };
 
+  componentDidMount() {
+    this.loadBoards();
+  }
+
+  loadBoards = async () => {
+    const apiResult = await fetchApi('board', 'GET');
+
+    if (apiResult.status === true) {
+      const boards = apiResult.boards;
+      this.props.loadBoards(boards);
+    }
+  }
+
   submitModal = () => {
     const { boardName, modalAction } = this.state;
 
@@ -43,45 +57,56 @@ class Boards extends React.Component<Props, States> {
     }
   };
 
-  deleteBoard = () => {
+  deleteBoard = async () => {
     const { boardID } = this.state;
     this.props.deleteBoard({ id: boardID });
+    const apiResult = await fetchApi('board/' + boardID, 'DELETE');
     this.closeModal();
   };
 
-  editBoard = () => {
+  editBoard = async () => {
     const { boardID, boardName } = this.state;
 
     if (boardName === "") {
       return false;
     }
 
-    const data: BoardState = {
+    const data = {
       id: boardID,
       name: boardName,
     };
 
-    this.props.editBoard(data);
-    this.closeModal();
+    // send to api
+    const apiResult = await fetchApi('board/' + boardID, 'PUT', data);
+
+    if (apiResult.status === true) {
+      this.props.editBoard(data);
+      this.closeModal();
+    }
   };
 
-  createBoard = () => {
+  createBoard = async () => {
     const { boardName } = this.state;
 
     if (boardName === "") {
       return false;
     }
 
-    const id = uuidv4();
+    const apiResult = await fetchApi('board', 'POST', { name: boardName });
 
-    const data: BoardState = {
-      id: id,
-      name: boardName,
-      taskList: [],
-    };
+    if (apiResult.status === true) {
 
-    this.props.addBoard(data);
-    this.closeModal();
+      const boardID = apiResult.boardID;
+  
+      const data = {
+        id: boardID,
+        name: boardName,
+        taskList: [],
+      };
+
+      this.props.addBoard(data);
+      this.closeModal();
+    }
   };
 
   onChange = (event: any) => {
@@ -217,7 +242,7 @@ const mapStateToProps = ({ task }: MainState) => {
 };
 
 const mapDispatchToProps = {
-  logout,
+  loadBoards,
   addBoard,
   editBoard,
   deleteBoard,

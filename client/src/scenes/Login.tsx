@@ -11,19 +11,25 @@ interface Props {
 }
 
 interface States {
-  email: string;
+  username: string;
   password: string;
 }
 
 class Login extends React.Component<Props, States> {
   readonly state: States = {
-    email: "",
-    password: "",
+    username: "demo",
+    password: "demo",
   };
 
   checkLogin = () => {
-    const { email, password } = this.state;
-    this.props.loginSuccess("aaa");
+    const { username, password } = this.state;
+
+    if (username === "demo" && password === "demo") {
+      this.props.loginSuccess("demo");
+      return true;
+    }
+
+    // show fail
   };
 
   onChange = (event: any) => {
@@ -33,18 +39,17 @@ class Login extends React.Component<Props, States> {
   };
 
   render() {
-    const { email, password } = this.state;
+    const { username, password } = this.state;
     return (
       <div className="login-form">
-        <h1>
+        <h1 className="pb-4">
           <span className="font-weight-bold">Task Board</span>
         </h1>
-        <h2 className="text-center">Login</h2>
         <TextInput
-          name="email"
-          label="Email"
-          type="email"
-          value={email}
+          name="username"
+          label="Username"
+          type="text"
+          value={username}
           onChange={this.onChange}
         />
         <TextInput

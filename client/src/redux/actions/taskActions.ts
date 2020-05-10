@@ -1,4 +1,6 @@
 import {
+  LOAD_BOARDS,
+  LOAD_BOARD,
   ADD_BOARD,
   EDIT_BOARD,
   DELETE_BOARD,
@@ -8,9 +10,22 @@ import {
   ADD_TASK,
   EDIT_TASK,
   DELETE_TASK,
-  LOAD_TASK,
   MOVE_TASK,
 } from "../types";
+
+export const loadBoards = (payload: any) => {
+  return {
+    type: LOAD_BOARDS,
+    payload,
+  };
+};
+
+export const loadBoard = (payload: any) => {
+  return {
+    type: LOAD_BOARD,
+    payload,
+  };
+};
 
 export const addBoard = (payload: any) => {
   return {
@@ -71,13 +86,6 @@ export const editTask = (payload: any) => {
 export const deleteTask = (payload: any) => {
   return {
     type: DELETE_TASK,
-    payload,
-  };
-};
-
-export const loadTask = (payload: any) => {
-  return {
-    type: LOAD_TASK,
     payload,
   };
 };

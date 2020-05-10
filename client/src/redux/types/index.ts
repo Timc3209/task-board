@@ -4,6 +4,7 @@ export * from "./taskTypes";
 export interface TaskItemState {
   id: string;
   name: string;
+  sortOrder: number,
 }
 
 export interface TaskListState {

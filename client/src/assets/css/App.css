@@ -22,10 +22,57 @@
   margin: 0 auto;
   max-width: 1200px;
   padding: 15px;
+  margin-top: 60px;
 }
 
 .btn-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+}
+
+.select-board {
+  width: 300px;
+  display: inline-block;
+  margin: 0 20px;
+}
+
+.tasklist-header h4 {
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-icon {
+  cursor: pointer;
+  margin: 5px;
+}
+
+.btn-span {
+  cursor: pointer;
+  padding: 3px;
+}
+
+.board-tools {
+  margin-top: 60px;
+}
+
+.task-actions {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+}
+
+.bottom-task-actions {
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+}
+
+.relative {
+  position: relative;
+}
+
+.task-container {
+  padding-bottom: 50px;
 }

@@ -10,7 +10,7 @@ import {
   addTask,
   editTask,
   deleteTask,
-  loadTask,
+  loadBoard,
   moveTask,
   setDefaultBoard,
 } from "../redux/actions";
@@ -20,6 +20,7 @@ import SelectInput from "../components/SelectInput";
 import TextInput from "../components/TextInput";
 import TaskList from "../components/TaskList";
 import CrudModal from "../components/CrudModal";
+import { fetchApi } from "../lib/api";
 
 interface Props {
   defaultBoard: string;
@@ -33,7 +34,7 @@ interface Props {
   editTask: typeof editTask;
   deleteTask: typeof deleteTask;
   moveTask: typeof moveTask;
-  loadTask: typeof loadTask;
+  loadBoard: typeof loadBoard;
 }
 
 interface States {
@@ -62,14 +63,14 @@ const reorder = (list: any, startIndex: any, endIndex: any) => {
 const move = (
   source: any,
   destination: any,
-  droppableSource: any,
-  droppableDestination: any
+  startIndex: any,
+  endIndex: any
 ) => {
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
+  const [removed] = sourceClone.splice(startIndex, 1);
 
-  destClone.splice(droppableDestination.index, 0, removed);
+  destClone.splice(endIndex, 0, removed);
 
   const result = { sourceItems: sourceClone, destinationItems: destClone };
   return result;
@@ -85,6 +86,10 @@ class TaskBoard extends React.Component<Props, States> {
     modalAction: "",
     modalType: "",
   };
+
+  componentDidMount() {
+    this.loadDefaultBoard();
+  }
 
   submitModal = () => {
     const { modalAction, modalType } = this.state;
@@ -108,22 +113,25 @@ class TaskBoard extends React.Component<Props, States> {
     }
   };
 
-  deleteList = () => {
+  deleteList = async () => {
     const { currentBoard } = this.props;
     const { listID } = this.state;
 
     const boardID = currentBoard.id;
 
-    const data = {
-      boardID: boardID,
-      id: listID,
-    };
+    const apiResult = await fetchApi('taskList/' + listID, 'DELETE');
 
-    this.props.deleteList(data);
-    this.closeModal();
+    if(apiResult.status === true) {
+      const data = {
+        boardID: boardID,
+        id: listID,
+      };
+      this.props.deleteList(data);
+      this.closeModal();
+    } 
   };
 
-  editList = () => {
+  editList = async () => {
     const { currentBoard } = this.props;
     const { listID, listName } = this.state;
 
@@ -132,18 +140,22 @@ class TaskBoard extends React.Component<Props, States> {
     }
 
     const boardID = currentBoard.id;
+    const apiResult = await fetchApi('taskList/' + listID, 'PUT', { name: listName });
 
-    const data = {
-      boardID: boardID,
-      id: listID,
-      name: listName,
-    };
-
-    this.props.editList(data);
-    this.closeModal();
+    if(apiResult.status === true) {
+      
+      const data = {
+        boardID: boardID,
+        id: listID,
+        name: listName,
+      };
+      
+      this.props.editList(data);
+      this.closeModal();
+    }
   };
 
-  createList = () => {
+  createList = async () => {
     const { currentBoard } = this.props;
     const { listName } = this.state;
 
@@ -152,37 +164,45 @@ class TaskBoard extends React.Component<Props, States> {
     }
 
     const boardID = currentBoard.id;
-    const id = uuidv4();
 
-    console.log(id);
 
-    const data = {
-      id: id,
-      name: listName,
-      tasks: [],
-    };
+    const apiResult = await fetchApi('taskList', 'POST', { name: listName, boardID: boardID });
 
-    this.props.addList({ boardID: boardID, taskList: data });
-    this.closeModal();
+    if (apiResult.status === true) {
+
+      const taskListID = apiResult.taskListID;
+
+      const data = {
+        id: taskListID,
+        name: listName,
+        tasks: [],
+      };
+  
+      this.props.addList({ boardID: boardID, taskList: data });
+      this.closeModal();
+    }
   };
 
-  deleteTask = () => {
+  deleteTask = async () => {
     const { currentBoard } = this.props;
     const { listID, taskID } = this.state;
 
     const boardID = currentBoard.id;
 
-    const data = {
-      boardID: boardID,
-      listID: listID,
-      id: taskID,
-    };
+    const apiResult = await fetchApi('task/' + taskID, 'DELETE');
 
-    this.props.deleteTask(data);
-    this.closeModal();
+    if(apiResult.status === true) {
+      const data = {
+        boardID: boardID,
+        listID: listID,
+        id: taskID,
+      };
+      this.props.deleteTask(data);
+      this.closeModal();
+    } 
   };
 
-  editTask = () => {
+  editTask = async () => {
     const { currentBoard } = this.props;
     const { listID, taskID, taskName } = this.state;
 
@@ -192,18 +212,23 @@ class TaskBoard extends React.Component<Props, States> {
 
     const boardID = currentBoard.id;
 
-    const data = {
-      boardID: boardID,
-      listID: listID,
-      id: taskID,
-      name: taskName,
-    };
+    const apiResult = await fetchApi('task/' + taskID, 'PUT', { name: taskName });
 
-    this.props.editTask(data);
-    this.closeModal();
+    if(apiResult.status === true) {
+      
+      const data = {
+        boardID: boardID,
+        listID: listID,
+        id: taskID,
+        name: taskName,
+      };
+      
+      this.props.editTask(data);
+      this.closeModal();
+    }
   };
 
-  createTask = () => {
+  createTask = async () => {
     const { currentBoard } = this.props;
     const { listID, taskName } = this.state;
 
@@ -212,17 +237,21 @@ class TaskBoard extends React.Component<Props, States> {
     }
 
     const boardID = currentBoard.id;
-    const id = uuidv4();
 
-    console.log(id);
+    const apiResult = await fetchApi('task', 'POST', { name: taskName, listID: listID });
 
-    const data = {
-      id: id,
-      name: taskName,
-    };
+    if (apiResult.status === true) {
 
-    this.props.addTask({ boardID: boardID, listID: listID, task: data });
-    this.closeModal();
+      const taskID = apiResult.taskID;
+
+      const data = {
+        id: taskID,
+        name: taskName,
+      };
+  
+      this.props.addTask({ boardID: boardID, listID: listID, task: data });
+      this.closeModal();
+    }
   };
 
   openCreateModal = () => {
@@ -312,14 +341,30 @@ class TaskBoard extends React.Component<Props, States> {
   onDefaultBoardChange = (event: any) => {
     const boardID = event.currentTarget.value;
     this.props.setDefaultBoard(boardID);
-    this.loadTask(boardID);
+    this.loadBoard(boardID);
   };
 
-  loadTask = (boardID: string) => {
-    console.log("load task");
+  loadDefaultBoard = () => {
+    const { currentBoard } = this.props;
+    const boardID = currentBoard.id;
+    this.loadBoard(boardID);
+  }
+
+  loadBoard = async (boardID: string) => {
+
+    if (boardID === "0") {
+      return false;
+    }
+
+    const apiResult = await fetchApi('board/' + boardID, 'GET');
+
+    if (apiResult.status === true && apiResult.board) {
+      const board = apiResult.board;
+      this.props.loadBoard(board);
+    }
   };
 
-  onDragEnd = (result: any) => {
+  onDragEnd = async (result: any) => {
     const { currentBoard } = this.props;
     const { source, destination } = result;
 
@@ -330,71 +375,67 @@ class TaskBoard extends React.Component<Props, States> {
     }
 
     const boardID = currentBoard.id;
-    const sourceListID = source.droppableId;
-    const destinationListID = destination.droppableId;
+    const sourceID = source.droppableId;
+    const destinationID = destination.droppableId;
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
 
-    // same list.
-    if (source.droppableId === destination.droppableId) {
-      // get tasklist.
-      const list = getTaskListByID(currentBoard, destinationListID);
-      // reorder items.
-      const tasks: any = reorder(list.tasks, sourceIndex, destinationIndex);
+    const data = {
+      sourceID,
+      destinationID,
+      sourceIndex,
+      destinationIndex
+    }
 
-      // set new sequence.
-      for (var i = 0; i < tasks.length; i++) {
-        tasks[i].sequence = i + 1;
+    const apiResult = await fetchApi('taskList/updateOrder', 'POST', data);
+
+    if (apiResult.status === true) {
+      // same list.
+      if (source.droppableId === destination.droppableId) {
+        // get tasklist.
+        const list = getTaskListByID(currentBoard, destinationID);
+        // reorder items.
+        const tasks: any = reorder(list.tasks, sourceIndex, destinationIndex);
+
+        // update redux
+        this.props.moveTask({
+          boardID: boardID,
+          id: destinationID,
+          tasks: tasks,
+        });
+
+        console.log(tasks);
+        console.log(this.props.boards);
+        return;
       }
 
-      // update redux
+      const sourceList = getTaskListByID(currentBoard, sourceID);
+      const destinationList = getTaskListByID(currentBoard, destinationID);
+
+      // new list
+      const moveResult = move(
+        sourceList.tasks,
+        destinationList.tasks,
+        sourceIndex,
+        destinationIndex
+      );
+
+      const { sourceItems, destinationItems }: any = moveResult;
+
+      // update redux source items
       this.props.moveTask({
         boardID: boardID,
-        id: destinationListID,
-        tasks: tasks,
+        id: sourceID,
+        tasks: sourceItems,
       });
 
-      console.log(tasks);
-      console.log(this.props.boards);
-      return;
+      // update redux destination items
+      this.props.moveTask({
+        boardID: boardID,
+        id: destinationID,
+        tasks: destinationItems,
+      });
     }
-
-    const sourceList = getTaskListByID(currentBoard, sourceListID);
-    const destinationList = getTaskListByID(currentBoard, destinationListID);
-
-    // new list
-    const moveResult = move(
-      sourceList.tasks,
-      destinationList.tasks,
-      source,
-      destination
-    );
-
-    const { sourceItems, destinationItems }: any = moveResult;
-
-    // set new sequence.
-    for (var i = 0; i < sourceItems.length; i++) {
-      sourceItems[i].sequence = i + 1;
-    }
-
-    // set new sequence.
-    for (var i = 0; i < destinationItems.length; i++) {
-      destinationItems[i].sequence = i + 1;
-    }
-
-    // update redux source items
-    this.props.moveTask({
-      boardID: boardID,
-      id: sourceListID,
-      tasks: sourceItems,
-    });
-
-    // update redux destination items
-    this.props.moveTask({
-      boardID: boardID,
-      id: destinationListID,
-      tasks: destinationItems,
-    });
   };
 
   render() {
@@ -408,25 +449,28 @@ class TaskBoard extends React.Component<Props, States> {
     return (
       <div className="App">
         <Header />
-        <SelectInput
-          name="defaultBoard"
-          label="Board Name"
-          value={this.props.defaultBoard}
-          selectLabel="Select Board"
-          options={this.props.boards}
-          onChange={this.onDefaultBoardChange}
-        />
-        <Button color="success" onClick={this.openCreateModal}>
-          Create List
-        </Button>
-        <br />
-        <br />
-        <div className="d-flex">
+        <div className="board-tools">
+          <div className="select-board">
+            <SelectInput
+              name="defaultBoard"
+              label="Board Name"
+              value={this.props.defaultBoard}
+              selectLabel="Select Board"
+              options={this.props.boards}
+              onChange={this.onDefaultBoardChange}
+            />
+          </div>
+          <Button color="success" onClick={this.openCreateModal}>
+            Create List
+          </Button>
+        </div>
+        <div className="d-flex ml-2">
           <DragDropContext onDragEnd={this.onDragEnd}>
-            {this.props.currentBoard &&
+            {this.props.currentBoard && this.props.currentBoard.taskList &&
               this.props.currentBoard.taskList.map((list: any, index: any) => {
                 return (
                   <TaskList
+                    index={index}
                     id={list.id}
                     name={list.name}
                     tasks={list.tasks}
@@ -458,21 +502,26 @@ class TaskBoard extends React.Component<Props, States> {
           ) : (
             <div>
               {modalType === "List" ? (
-                <TextInput
-                  name="listName"
-                  label="List Name"
-                  type="text"
-                  value={listName}
-                  onChange={this.onChange}
-                />
+                <div>
+                  <TextInput
+                    name="listName"
+                    label="List Name"
+                    type="text"
+                    value={listName}
+                    onChange={this.onChange}
+                  />
+                </div>
               ) : (
-                <TextInput
-                  name="taskName"
-                  label="Task Name"
-                  type="text"
-                  value={taskName}
-                  onChange={this.onChange}
-                />
+                <div>
+                  <p>List {listName}</p>
+                  <TextInput
+                    name="taskName"
+                    label="Task Name"
+                    type="text"
+                    value={taskName}
+                    onChange={this.onChange}
+                  />
+                </div>
               )}
             </div>
           )}
@@ -489,7 +538,9 @@ const getBoardByID = (boards: Array<BoardState>, boardID: string) => {
 const mapStateToProps = ({ task, auth }: MainState) => {
   const { boards } = task;
   const { defaultBoard } = auth;
-  const currentBoard = getBoardByID(boards, defaultBoard);
+  const board = getBoardByID(boards, defaultBoard);
+  const currentBoard = (board == null) ? { id: "0", name: "select"} : board
+
   return { boards, defaultBoard, currentBoard };
 };
 
@@ -500,7 +551,7 @@ const mapDispatchToProps = {
   addTask,
   editTask,
   deleteTask,
-  loadTask,
+  loadBoard,
   moveTask,
   setDefaultBoard,
 };

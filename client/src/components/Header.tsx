@@ -36,7 +36,7 @@ class Header extends React.Component<Props, States> {
   render() {
     const { isOpen } = this.state;
     return (
-      <Navbar color="light" light expand="md">
+      <Navbar color="light" light expand="md" fixed="top">
         <NavbarBrand href="/">Task Board</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={isOpen} navbar className="justify-content-end">

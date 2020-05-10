@@ -1,11 +1,12 @@
 import {
+  LOAD_BOARDS,
+  LOAD_BOARD,
   ADD_BOARD,
   EDIT_BOARD,
   DELETE_BOARD,
   ADD_TASK,
   EDIT_TASK,
   DELETE_TASK,
-  LOAD_TASK,
   MOVE_TASK,
   ADD_LIST,
   EDIT_LIST,
@@ -20,6 +21,11 @@ const INITIAL_STATE: TaskState = {
 
 export default (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
+    case LOAD_BOARDS:
+      return {
+        ...state,
+        boards: action.payload,
+      };
     case ADD_BOARD:
       return {
         ...state,
@@ -143,12 +149,16 @@ export default (state = INITIAL_STATE, action: any) => {
             : board
         ),
       };
-    case LOAD_TASK:
+    case LOAD_BOARD:
       return {
         ...state,
         boards: state.boards.map((board: any) =>
           board.id === action.payload.id
-            ? { ...board, taskList: action.payload.taskList }
+            ? {
+                ...board,
+                name: action.payload.name,
+                taskList: action.payload.taskList,
+              }
             : board
         ),
       };

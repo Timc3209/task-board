@@ -15,12 +15,15 @@ const grid = 8;
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
+  position: "relative",
   userSelect: "none",
   padding: `${grid * 2}px ${grid}px`,
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
+  background: isDragging ? "lightgreen" : "#FFF",
+  boxShadow: "0 1px 1px rgba(0,0,0, .20)",
+  border: "1px solid #fff",
 
   // styles we need to apply on draggables
   ...draggableStyle,
@@ -35,14 +38,16 @@ const TaskItem = ({ id, name, index, editTask, deleteTask }: MyProps) => (
         {...provided.dragHandleProps}
         style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
       >
-        <span>{name}</span>
-        <div className="float-right">
-          <button onClick={editTask}>
-            <FontAwesomeIcon icon={faEdit} size="xs" />
-          </button>
-          <button onClick={deleteTask} className="ml-2">
-            <FontAwesomeIcon icon={faTrash} size="xs" />
-          </button>
+        <span onClick={editTask} className="btn-span">
+          {name}
+        </span>
+        <div className="task-actions">
+          <FontAwesomeIcon
+            icon={faTrash}
+            size="sm"
+            className="btn-icon"
+            onClick={deleteTask}
+          />
         </div>
       </div>
     )}
