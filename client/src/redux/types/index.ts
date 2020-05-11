@@ -4,7 +4,7 @@ export * from "./taskTypes";
 export interface TaskItemState {
   id: string;
   name: string;
-  sortOrder: number,
+  sortOrder: number;
 }
 
 export interface TaskListState {
@@ -22,7 +22,7 @@ export interface BoardState {
 export interface AuthState {
   loggedIn: boolean;
   token: string;
-  defaultBoard: string;
+  currentBoard: string;
 }
 
 export interface TaskState {

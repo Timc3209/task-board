@@ -17,8 +17,7 @@
     "reactstrap": "^8.4.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0",
-    "uuid": "^8.0.0"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -46,7 +45,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build && mv ./build ../dist/client",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .ts ./src"
   },
   "eslintConfig": {
     "extends": "react-app"

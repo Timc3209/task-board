@@ -1,9 +1,9 @@
-import { LOGIN_SUCCESS, LOGOUT, SET_DEFAULT_BOARD, AuthState } from "../types";
+import { LOGIN_SUCCESS, LOGOUT, SET_CURRENT_BOARD, AuthState } from "../types";
 
 const INITIAL_STATE: AuthState = {
   loggedIn: false,
   token: "",
-  defaultBoard: "0",
+  currentBoard: "0",
 };
 
 export default (state = INITIAL_STATE, action: any) => {
@@ -13,10 +13,10 @@ export default (state = INITIAL_STATE, action: any) => {
         ...state,
         loggedIn: true,
       };
-    case SET_DEFAULT_BOARD:
+    case SET_CURRENT_BOARD:
       return {
         ...state,
-        defaultBoard: action.payload,
+        currentBoard: action.payload,
       };
     case LOGOUT:
       return { ...INITIAL_STATE };

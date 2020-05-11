@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { OK, BAD_REQUEST } from "http-status-codes";
 import Board from "../models/boardModel";
 
-class boardController {
+class BoardController {
   public path = "/board";
   public router = express.Router();
 
@@ -23,12 +23,10 @@ class boardController {
     const boardID = req.params.boardID;
     const { name } = req.body;
 
-    console.log(boardID);
     try {
-      const updateResult = await Board.findByIdAndUpdate(boardID, {
+      await Board.findByIdAndUpdate(boardID, {
         name: name,
       });
-      console.log(updateResult);
       return res.status(OK).json({ status: true, response: "Board Updated" });
     } catch (err) {
       console.log(err);
@@ -41,10 +39,8 @@ class boardController {
 
   deleteBoard = async (req: Request, res: Response) => {
     const boardID = req.params.boardID;
-    console.log(boardID);
     try {
-      const deleteResult = await Board.findByIdAndRemove(boardID);
-      console.log(deleteResult);
+      await Board.findByIdAndRemove(boardID);
       return res.status(OK).json({ status: true, response: "Board Deleted" });
     } catch (err) {
       console.log(err);
@@ -70,13 +66,12 @@ class boardController {
 
   getBoard = async (req: Request, res: Response) => {
     const boardID = req.params.boardID;
-    console.log(boardID);
+
     try {
       const board = await Board.findById(boardID).populate({
         path: "taskList",
         populate: { path: "tasks", options: { sort: "sortOrder" } },
       });
-      console.log(board);
       return res.status(OK).json({ status: true, board: board });
     } catch (err) {
       console.log(err);
@@ -88,7 +83,7 @@ class boardController {
   };
 
   createBoard = async (req: Request, res: Response) => {
-    const { id, name, taskList } = req.body;
+    const { name } = req.body;
 
     try {
       const board = new Board({ name, taskList: [] });
@@ -105,4 +100,4 @@ class boardController {
   };
 }
 
-export default boardController;
+export default BoardController;

@@ -178,8 +178,8 @@ export default (state = INITIAL_STATE, action: any) => {
             : board
         ),
       };
-    // case LOGOUT:
-    //   return { ...INITIAL_STATE };
+    case LOGOUT:
+      return { ...INITIAL_STATE };
     default:
       return state;
   }

@@ -23,7 +23,11 @@ const SelectInput = ({
     <Input type="select" name={name} value={value} onChange={onChange}>
       <option value="0">{selectLabel}</option>
       {options.map((row: any, index: any) => {
-        return <option value={row.id}>{row.name}</option>;
+        return (
+          <option value={row.id} key={index}>
+            {row.name}
+          </option>
+        );
       })}
     </Input>
   </FormGroup>

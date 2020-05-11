@@ -1,21 +1,27 @@
-const apiUrl = 'http://localhost:8080/api/';
+const apiUrl = "http://localhost:8080/api/";
 
-export const fetchApi = async (endPoint: string, method: string, data: any = {}) => {
+export const fetchApi = async (
+  endPoint: string,
+  method: string,
+  data: any = {}
+) => {
   try {
-
-    const bodyData = (method === 'POST' || method === 'PUT') ? { body: JSON.stringify(data) } : {};
+    const bodyData =
+      method === "POST" || method === "PUT"
+        ? { body: JSON.stringify(data) }
+        : {};
 
     const response = await fetch(apiUrl + endPoint, {
       method: method,
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      ...bodyData
-    })
+      ...bodyData,
+    });
     return await response.json();
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return { status: false };
   }
-}
+};

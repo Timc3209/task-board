@@ -37,16 +37,16 @@ class Boards extends React.Component<Props, States> {
   }
 
   loadBoards = async () => {
-    const apiResult = await fetchApi('board', 'GET');
+    const apiResult = await fetchApi("board", "GET");
 
     if (apiResult.status === true) {
       const boards = apiResult.boards;
       this.props.loadBoards(boards);
     }
-  }
+  };
 
   submitModal = () => {
-    const { boardName, modalAction } = this.state;
+    const { modalAction } = this.state;
 
     if (modalAction === "Delete") {
       this.deleteBoard();
@@ -60,8 +60,12 @@ class Boards extends React.Component<Props, States> {
   deleteBoard = async () => {
     const { boardID } = this.state;
     this.props.deleteBoard({ id: boardID });
-    const apiResult = await fetchApi('board/' + boardID, 'DELETE');
-    this.closeModal();
+    const apiResult = await fetchApi("board/" + boardID, "DELETE");
+
+    if (apiResult.status === true) {
+      this.props.deleteBoard({ id: boardID });
+      this.closeModal();
+    }
   };
 
   editBoard = async () => {
@@ -77,7 +81,7 @@ class Boards extends React.Component<Props, States> {
     };
 
     // send to api
-    const apiResult = await fetchApi('board/' + boardID, 'PUT', data);
+    const apiResult = await fetchApi("board/" + boardID, "PUT", data);
 
     if (apiResult.status === true) {
       this.props.editBoard(data);
@@ -92,12 +96,11 @@ class Boards extends React.Component<Props, States> {
       return false;
     }
 
-    const apiResult = await fetchApi('board', 'POST', { name: boardName });
+    const apiResult = await fetchApi("board", "POST", { name: boardName });
 
     if (apiResult.status === true) {
-
       const boardID = apiResult.boardID;
-  
+
       const data = {
         id: boardID,
         name: boardName,
@@ -129,16 +132,6 @@ class Boards extends React.Component<Props, States> {
     });
   };
 
-  openDeleteModal = (row: any) => {
-    const { id, name } = row;
-    this.setState({
-      modalOpen: true,
-      modalAction: "Delete",
-      boardID: id,
-      boardName: name,
-    });
-  };
-
   closeModal = () => {
     this.setState({
       modalOpen: false,
@@ -158,14 +151,6 @@ class Boards extends React.Component<Props, States> {
           onClick={() => this.openEditModal(row)}
         >
           Edit
-        </Button>
-        <Button
-          outline
-          color="danger"
-          size="sm"
-          onClick={() => this.openDeleteModal(row)}
-        >
-          Delete
         </Button>
       </div>
     );
@@ -216,6 +201,7 @@ class Boards extends React.Component<Props, States> {
           modalOpen={modalOpen}
           modalAction={modalAction}
           modalType="Board"
+          deleteAction={this.deleteBoard}
           submitModal={this.submitModal}
           closeModal={this.closeModal}
         >

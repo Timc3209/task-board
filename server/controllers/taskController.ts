@@ -1,11 +1,10 @@
 import * as express from "express";
 import { Request, Response } from "express";
 import { OK, BAD_REQUEST } from "http-status-codes";
-import Board from "../models/boardModel";
 import TaskList from "../models/taskListModel";
 import Task from "../models/taskModel";
 
-class taskController {
+class TaskController {
   public path = "/task";
   public router = express.Router();
 
@@ -23,12 +22,10 @@ class taskController {
     const taskID = req.params.taskID;
     const { name } = req.body;
 
-    console.log(taskID);
     try {
-      const updateResult = await Task.findByIdAndUpdate(taskID, {
+      await Task.findByIdAndUpdate(taskID, {
         name: name,
       });
-      console.log(updateResult);
       return res.status(OK).json({ status: true, response: "task Updated" });
     } catch (err) {
       console.log(err);
@@ -41,10 +38,9 @@ class taskController {
 
   deleteTask = async (req: Request, res: Response) => {
     const taskID = req.params.taskID;
-    console.log(taskID);
+
     try {
-      const deleteResult = await Task.findByIdAndRemove(taskID);
-      console.log(deleteResult);
+      await Task.findByIdAndRemove(taskID);
       return res.status(OK).json({ status: true, response: "task Deleted" });
     } catch (err) {
       console.log(err);
@@ -58,8 +54,6 @@ class taskController {
   createTask = async (req: Request, res: Response) => {
     const { name, listID } = req.body;
 
-    console.log(req.body);
-
     try {
       const taskList: any = await TaskList.findById(listID);
       const sortOrder = taskList.tasks.length + 1;
@@ -70,7 +64,7 @@ class taskController {
         sortOrder: sortOrder,
       });
 
-      const updateResult = await TaskList.findByIdAndUpdate(listID, {
+      await TaskList.findByIdAndUpdate(listID, {
         $addToSet: { tasks: result._id },
       });
 
@@ -88,4 +82,4 @@ class taskController {
   };
 }
 
-export default taskController;
+export default TaskController;

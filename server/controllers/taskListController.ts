@@ -4,31 +4,9 @@ import { OK, BAD_REQUEST } from "http-status-codes";
 import Board from "../models/boardModel";
 import TaskList from "../models/taskListModel";
 import Task from "../models/taskModel";
+import { reorderArray, moveArray } from "../lib/tools";
 
-const reorder = (list: any, startIndex: any, endIndex: any) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
-
-const move = (
-  source: any,
-  destination: any,
-  startIndex: any,
-  endIndex: any
-) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(startIndex, 1);
-
-  destClone.splice(endIndex, 0, removed);
-
-  const result = { sourceItems: sourceClone, destinationItems: destClone };
-  return result;
-};
-
-class taskListController {
+class TaskListController {
   public path = "/taskList";
   public router = express.Router();
 
@@ -53,19 +31,15 @@ class taskListController {
           path: "tasks",
           options: { sort: "sortOrder" },
         });
-        const tasks: any = reorder(
+        const tasks = reorderArray(
           taskList.tasks,
           sourceIndex,
           destinationIndex
         );
 
-        for (var i = 0; i < tasks.length; i++) {
-          tasks[i].sortOrder = i + 1;
-        }
-
-        tasks.forEach(async (task: any) => {
+        tasks.forEach(async (task: any, index: number) => {
           await Task.findByIdAndUpdate(task._id, {
-            sortOrder: task.sortOrder,
+            sortOrder: index + 1,
           });
         });
       } else {
@@ -84,50 +58,35 @@ class taskListController {
         });
 
         // new list
-        const moveResult = move(
+        const moveResult = moveArray(
           sourceList.tasks,
           destinationList.tasks,
           sourceIndex,
           destinationIndex
         );
 
-        const { sourceItems, destinationItems }: any = moveResult;
+        const { sourceItems, destinationItems } = moveResult;
 
-        if (sourceItems.length > 0) {
-          for (var i = 0; i < sourceItems.length; i++) {
-            sourceItems[i].sortOrder = i + 1;
-          }
-        }
-
-        if (destinationItems.length > 0) {
-          for (var i = 0; i < destinationItems.length; i++) {
-            destinationItems[i].sortOrder = i + 1;
-          }
-        }
-
-        sourceItems.forEach(async (task: any) => {
+        sourceItems.forEach(async (task: any, index: number) => {
           await Task.findByIdAndUpdate(task._id, {
-            sortOrder: task.sortOrder,
+            sortOrder: index + 1,
           });
         });
 
-        destinationItems.forEach(async (task: any) => {
+        destinationItems.forEach(async (task: any, index: number) => {
           await Task.findByIdAndUpdate(task._id, {
-            sortOrder: task.sortOrder,
+            sortOrder: index + 1,
             taskList: destinationID,
           });
 
           if (task.taskList !== sourceID) {
-            const removeResult = await TaskList.findByIdAndUpdate(sourceID, {
+            await TaskList.findByIdAndUpdate(sourceID, {
               $pull: { tasks: task._id },
             });
 
-            const updateResult = await TaskList.findByIdAndUpdate(
-              destinationID,
-              {
-                $addToSet: { tasks: task._id },
-              }
-            );
+            await TaskList.findByIdAndUpdate(destinationID, {
+              $addToSet: { tasks: task._id },
+            });
           }
         });
       }
@@ -148,12 +107,10 @@ class taskListController {
     const taskListID = req.params.taskListID;
     const { name } = req.body;
 
-    console.log(taskListID);
     try {
-      const updateResult = await TaskList.findByIdAndUpdate(taskListID, {
+      await TaskList.findByIdAndUpdate(taskListID, {
         name: name,
       });
-      console.log(updateResult);
       return res
         .status(OK)
         .json({ status: true, response: "taskList Updated" });
@@ -168,10 +125,8 @@ class taskListController {
 
   deleteTaskList = async (req: Request, res: Response) => {
     const taskListID = req.params.taskListID;
-    console.log(taskListID);
     try {
-      const deleteResult = await TaskList.findByIdAndRemove(taskListID);
-      console.log(deleteResult);
+      await TaskList.findByIdAndRemove(taskListID);
       return res
         .status(OK)
         .json({ status: true, response: "taskList Deleted" });
@@ -187,8 +142,6 @@ class taskListController {
   createTaskList = async (req: Request, res: Response) => {
     const { name, boardID } = req.body;
 
-    console.log(req.body);
-
     try {
       const result = await TaskList.create({
         name,
@@ -196,7 +149,7 @@ class taskListController {
         tasks: [],
       });
 
-      const updateResult = await Board.findByIdAndUpdate(boardID, {
+      await Board.findByIdAndUpdate(boardID, {
         $addToSet: { taskList: result._id },
       });
 
@@ -214,4 +167,4 @@ class taskListController {
   };
 }
 
-export default taskListController;
+export default TaskListController;

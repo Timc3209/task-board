@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGOUT, SET_DEFAULT_BOARD } from "../types";
+import { LOGIN_SUCCESS, LOGOUT, SET_CURRENT_BOARD } from "../types";
 
 export const loginSuccess = (payload: any) => {
   return {
@@ -13,9 +13,9 @@ export const logout = () => {
   };
 };
 
-export const setDefaultBoard = (payload: any) => {
+export const setCurrentBoard = (payload: any) => {
   return {
-    type: SET_DEFAULT_BOARD,
+    type: SET_CURRENT_BOARD,
     payload,
   };
 };

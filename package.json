@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon --config nodemon.json",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "lint": "eslint --ext .ts ./server"
   },
   "author": "",
   "license": "ISC",
