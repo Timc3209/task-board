@@ -1,6 +1,5 @@
 .DS_Store
 build/
 node_modules/
-dist/
 client/build
 client/node_modules/
