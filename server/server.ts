@@ -7,7 +7,7 @@ import BoardController from "./controllers/boardController";
 import TaskListController from "./controllers/taskListController";
 import TaskController from "./controllers/taskController";
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/new";
 
 mongoose.connect(databaseUrl, {

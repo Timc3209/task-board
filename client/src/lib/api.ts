@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:8080/api/";
+const apiUrl = "/api/";
 
 export const fetchApi = async (
   endPoint: string,
