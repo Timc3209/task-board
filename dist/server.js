@@ -8,18 +8,14 @@ const logger_1 = require("./middleware/logger");
 const boardController_1 = require("./controllers/boardController");
 const taskListController_1 = require("./controllers/taskListController");
 const taskController_1 = require("./controllers/taskController");
-const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/new";
-mongoose.connect(databaseUrl, {
+mongoose.connect("mongodb://localhost/new", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
 });
 mongoose.connection.on("error", () => {
-    throw new Error(`unable to connect to database: ${databaseUrl}`);
-});
-mongoose.connection.on("connected", () => {
-    console.log(`connected to database: ${databaseUrl}`);
+    throw new Error(`unable to connect to database: mongodb://localhost/new`);
 });
 mongoose.set("toJSON", { virtuals: true });
 const app = new app_1.default({
