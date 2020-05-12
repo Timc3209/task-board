@@ -47,6 +47,7 @@ interface States {
   modalOpen: boolean;
   modalAction: string;
   modalType: string;
+  showError: boolean;
 }
 
 class TaskBoard extends React.Component<Props, States> {
@@ -58,6 +59,7 @@ class TaskBoard extends React.Component<Props, States> {
     modalOpen: false,
     modalAction: "",
     modalType: "",
+    showError: false,
   };
 
   componentDidMount() {
@@ -103,6 +105,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, listName } = this.state;
 
     if (listName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -127,6 +130,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listName } = this.state;
 
     if (listName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -171,6 +175,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, taskID, taskName } = this.state;
 
     if (taskName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -196,6 +201,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, taskName } = this.state;
 
     if (taskName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -268,6 +274,7 @@ class TaskBoard extends React.Component<Props, States> {
       listID: "0",
       taskID: "0",
       taskName: "",
+      showError: false,
     });
   };
 
@@ -456,6 +463,8 @@ class TaskBoard extends React.Component<Props, States> {
                     type="text"
                     value={listName}
                     onChange={this.onChange}
+                    showError={this.state.showError}
+                    errorMessage="Please enter a name"
                   />
                 </div>
               ) : (
@@ -467,6 +476,8 @@ class TaskBoard extends React.Component<Props, States> {
                     type="text"
                     value={taskName}
                     onChange={this.onChange}
+                    showError={this.state.showError}
+                    errorMessage="Please enter a name"
                   />
                 </div>
               )}

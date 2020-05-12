@@ -1,5 +1,5 @@
 import React from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, FormFeedback } from "reactstrap";
 
 interface MyProps {
   name: string;
@@ -7,12 +7,29 @@ interface MyProps {
   type: any;
   value: string;
   onChange: (event: any) => void;
+  showError?: boolean;
+  errorMessage?: string;
 }
 
-const TextInput = ({ label, type, name, value, onChange }: MyProps) => (
+const TextInput = ({
+  label,
+  type,
+  name,
+  value,
+  onChange,
+  showError,
+  errorMessage,
+}: MyProps) => (
   <FormGroup>
     <Label>{label}</Label>
-    <Input type={type} name={name} value={value} onChange={onChange} />
+    <Input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      invalid={showError}
+    />
+    <FormFeedback>{errorMessage}</FormFeedback>
   </FormGroup>
 );
 

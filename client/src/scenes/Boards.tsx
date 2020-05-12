@@ -22,6 +22,7 @@ interface States {
   boardName: string;
   modalOpen: boolean;
   modalAction: string;
+  showError: boolean;
 }
 
 class Boards extends React.Component<Props, States> {
@@ -30,6 +31,7 @@ class Boards extends React.Component<Props, States> {
     boardName: "",
     modalOpen: false,
     modalAction: "",
+    showError: false,
   };
 
   componentDidMount() {
@@ -72,6 +74,7 @@ class Boards extends React.Component<Props, States> {
     const { boardID, boardName } = this.state;
 
     if (boardName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -93,6 +96,7 @@ class Boards extends React.Component<Props, States> {
     const { boardName } = this.state;
 
     if (boardName === "") {
+      this.setState({ showError: true });
       return false;
     }
 
@@ -137,6 +141,7 @@ class Boards extends React.Component<Props, States> {
       modalOpen: false,
       boardName: "",
       boardID: "0",
+      showError: false,
     });
   };
 
@@ -147,7 +152,6 @@ class Boards extends React.Component<Props, States> {
           outline
           color="primary"
           size="sm"
-          className="mr-3"
           onClick={() => this.openEditModal(row)}
         >
           Edit
@@ -171,7 +175,7 @@ class Boards extends React.Component<Props, States> {
         isDummyField: true,
         formatter: this.actionsFormatter,
         headerStyle: () => {
-          return { width: "160px", "text-align": "center" };
+          return { width: "130px", "text-align": "center" };
         },
       },
     ];
@@ -214,6 +218,8 @@ class Boards extends React.Component<Props, States> {
               type="text"
               value={boardName}
               onChange={this.onChange}
+              showError={this.state.showError}
+              errorMessage="Please enter a name"
             />
           )}
         </CrudModal>

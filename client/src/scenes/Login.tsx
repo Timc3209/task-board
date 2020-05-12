@@ -13,16 +13,29 @@ interface Props {
 interface States {
   username: string;
   password: string;
+  showError: boolean;
+  errorInput: string;
 }
 
 class Login extends React.Component<Props, States> {
   readonly state: States = {
     username: "demo",
     password: "demo",
+    showError: false,
+    errorInput: "",
   };
 
   checkLogin = () => {
     const { username, password } = this.state;
+
+    if (username === "") {
+      this.setState({ showError: true, errorInput: "username" });
+      return false;
+    }
+    if (password === "") {
+      this.setState({ showError: true, errorInput: "password" });
+      return false;
+    }
 
     if (username === "demo" && password === "demo") {
       this.props.loginSuccess("demo");
@@ -51,6 +64,10 @@ class Login extends React.Component<Props, States> {
           type="text"
           value={username}
           onChange={this.onChange}
+          showError={
+            this.state.errorInput === "username" && this.state.showError
+          }
+          errorMessage="Please enter a username"
         />
         <TextInput
           name="password"
@@ -58,6 +75,10 @@ class Login extends React.Component<Props, States> {
           type="password"
           value={password}
           onChange={this.onChange}
+          showError={
+            this.state.errorInput === "password" && this.state.showError
+          }
+          errorMessage="Please enter a password"
         />
         <Button
           className="btn-lg btn-dark btn-block mt-4"
