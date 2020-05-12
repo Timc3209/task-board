@@ -7,7 +7,10 @@ import BoardController from "./controllers/boardController";
 import TaskListController from "./controllers/taskListController";
 import TaskController from "./controllers/taskController";
 
-mongoose.connect("mongodb://localhost/new", {
+const port = process.env.PORT || 3000;
+const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/new";
+
+mongoose.connect(databaseUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -15,13 +18,17 @@ mongoose.connect("mongodb://localhost/new", {
 });
 
 mongoose.connection.on("error", () => {
-  throw new Error(`unable to connect to database: mongodb://localhost/new`);
+  throw new Error(`unable to connect to database: ${databaseUrl}`);
+});
+
+mongoose.connection.on("connected", () => {
+  console.log(`connected to database: ${databaseUrl}`);
 });
 
 mongoose.set("toJSON", { virtuals: true });
 
 const app = new App({
-  port: 8080,
+  port: port,
   controllers: [
     new BoardController(),
     new TaskListController(),
