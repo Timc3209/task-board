@@ -8,7 +8,7 @@ SimpleTaskBoard is a task manager app built with react.
 
 A deployed version of this project may be found [here.](https://simple-task-board.herokuapp.com/)
 
-## :star: Features
+## Features
 
 - Create/Edit/Delete Boards
 - Create/Edit/Delete Lists
