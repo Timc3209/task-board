@@ -5,7 +5,7 @@ import * as mongoose from "mongoose";
 import loggerMiddleware from "./middleware/logger";
 import BoardController from "./controllers/boardController";
 import TaskListController from "./controllers/taskListController";
-import TaskController from "./controllers/TaskController";
+import TaskController from "./controllers/taskController";
 
 mongoose.connect("mongodb://localhost/new", {
   useNewUrlParser: true,

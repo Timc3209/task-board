@@ -83,4 +83,4 @@ class TaskController {
     }
 }
 exports.default = TaskController;
-//# sourceMappingURL=TaskController.js.map
+//# sourceMappingURL=taskController.js.map

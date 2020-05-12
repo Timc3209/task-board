@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const logger_1 = require("./middleware/logger");
 const boardController_1 = require("./controllers/boardController");
 const taskListController_1 = require("./controllers/taskListController");
-const TaskController_1 = require("./controllers/TaskController");
+const taskController_1 = require("./controllers/taskController");
 mongoose.connect("mongodb://localhost/new", {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -23,7 +23,7 @@ const app = new app_1.default({
     controllers: [
         new boardController_1.default(),
         new taskListController_1.default(),
-        new TaskController_1.default(),
+        new taskController_1.default(),
     ],
     middleWares: [
         cors(),
