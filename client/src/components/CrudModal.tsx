@@ -27,7 +27,6 @@ class CrudModal extends React.Component<Props, States> {
   deleteAction = () => {
     this.props.deleteAction();
     this.setState({ showDelete: false });
-    this.props.closeModal();
   };
 
   closeDelete = () => {

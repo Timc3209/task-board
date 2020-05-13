@@ -48,6 +48,7 @@ interface States {
   modalAction: string;
   modalType: string;
   showError: boolean;
+  errorMessage: string;
 }
 
 class TaskBoard extends React.Component<Props, States> {
@@ -60,6 +61,7 @@ class TaskBoard extends React.Component<Props, States> {
     modalAction: "",
     modalType: "",
     showError: false,
+    errorMessage: "",
   };
 
   componentDidMount() {
@@ -97,7 +99,9 @@ class TaskBoard extends React.Component<Props, States> {
       };
       this.props.deleteList(data);
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   editList = async () => {
@@ -105,7 +109,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, listName } = this.state;
 
     if (listName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -122,7 +126,9 @@ class TaskBoard extends React.Component<Props, States> {
 
       this.props.editList(data);
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   createList = async () => {
@@ -130,7 +136,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listName } = this.state;
 
     if (listName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -150,7 +156,9 @@ class TaskBoard extends React.Component<Props, States> {
 
       this.props.addList({ boardID: currentBoard, taskList: data });
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   deleteTask = async () => {
@@ -167,7 +175,10 @@ class TaskBoard extends React.Component<Props, States> {
       };
       this.props.deleteTask(data);
       this.closeModal();
+      return true;
     }
+
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   editTask = async () => {
@@ -175,7 +186,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, taskID, taskName } = this.state;
 
     if (taskName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -193,7 +204,9 @@ class TaskBoard extends React.Component<Props, States> {
 
       this.props.editTask(data);
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   createTask = async () => {
@@ -201,7 +214,7 @@ class TaskBoard extends React.Component<Props, States> {
     const { listID, taskName } = this.state;
 
     if (taskName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -220,7 +233,9 @@ class TaskBoard extends React.Component<Props, States> {
 
       this.props.addTask({ boardID: currentBoard, listID: listID, task: data });
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   openCreateModal = () => {
@@ -275,6 +290,7 @@ class TaskBoard extends React.Component<Props, States> {
       taskID: "0",
       taskName: "",
       showError: false,
+      errorMessage: "",
     });
   };
 
@@ -449,40 +465,34 @@ class TaskBoard extends React.Component<Props, States> {
           submitModal={this.submitModal}
           closeModal={this.closeModal}
         >
-          {modalAction === "Delete" ? (
-            <p>
-              {modalType} {modalType === "List" ? listName : taskName}
-            </p>
-          ) : (
-            <div>
-              {modalType === "List" ? (
-                <div>
-                  <TextInput
-                    name="listName"
-                    label="List Name"
-                    type="text"
-                    value={listName}
-                    onChange={this.onChange}
-                    showError={this.state.showError}
-                    errorMessage="Please enter a name"
-                  />
-                </div>
-              ) : (
-                <div>
-                  <p>List {listName}</p>
-                  <TextInput
-                    name="taskName"
-                    label="Task Name"
-                    type="text"
-                    value={taskName}
-                    onChange={this.onChange}
-                    showError={this.state.showError}
-                    errorMessage="Please enter a name"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          <div>
+            {modalType === "List" ? (
+              <div>
+                <TextInput
+                  name="listName"
+                  label="List Name"
+                  type="text"
+                  value={listName}
+                  onChange={this.onChange}
+                  showError={this.state.showError}
+                  errorMessage="Please enter a name"
+                />
+              </div>
+            ) : (
+              <div>
+                <p>List {listName}</p>
+                <TextInput
+                  name="taskName"
+                  label="Task Name"
+                  type="text"
+                  value={taskName}
+                  onChange={this.onChange}
+                  showError={this.state.showError}
+                  errorMessage={this.state.errorMessage}
+                />
+              </div>
+            )}
+          </div>
         </CrudModal>
       </div>
     );

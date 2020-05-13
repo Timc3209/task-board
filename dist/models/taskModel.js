@@ -15,6 +15,10 @@ const taskSchema = new mongoose.Schema({
         type: Number,
         required: "number is required",
     },
+    created: {
+        type: Date,
+        default: Date.now,
+    },
 });
 exports.default = mongoose.model("Task", taskSchema);
 //# sourceMappingURL=taskModel.js.map

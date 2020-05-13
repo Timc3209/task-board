@@ -19,13 +19,37 @@ class BoardController {
         this.updateBoard = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const boardID = req.params.boardID;
             const { name } = req.body;
+            if (boardID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid boardID",
+                });
+            }
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
-                yield boardModel_1.default.findByIdAndUpdate(boardID, {
+                const updateResult = yield boardModel_1.default.findByIdAndUpdate(boardID, {
                     name: name,
                 });
+                if (updateResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid boardID",
+                    });
+                }
                 return res.status(http_status_codes_1.OK).json({ status: true, response: "Board Updated" });
             }
             catch (err) {
+                if (err.code === 11000) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Duplicate board name",
+                    });
+                }
                 console.log(err);
                 return res.status(http_status_codes_1.BAD_REQUEST).json({
                     status: false,
@@ -35,8 +59,20 @@ class BoardController {
         });
         this.deleteBoard = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const boardID = req.params.boardID;
+            if (boardID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid boardID",
+                });
+            }
             try {
-                yield boardModel_1.default.findByIdAndRemove(boardID);
+                const deleteResult = yield boardModel_1.default.findByIdAndRemove(boardID);
+                if (deleteResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid boardID",
+                    });
+                }
                 return res.status(http_status_codes_1.OK).json({ status: true, response: "Board Deleted" });
             }
             catch (err) {
@@ -62,6 +98,12 @@ class BoardController {
         });
         this.getBoard = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const boardID = req.params.boardID;
+            if (boardID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid boardID",
+                });
+            }
             try {
                 const board = yield boardModel_1.default.findById(boardID).populate({
                     path: "taskList",
@@ -79,6 +121,12 @@ class BoardController {
         });
         this.createBoard = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { name } = req.body;
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
                 const board = new boardModel_1.default({ name, taskList: [] });
                 const result = yield board.save();
@@ -87,8 +135,15 @@ class BoardController {
                     .json({ status: true, response: "Board Created", boardID: result._id });
             }
             catch (err) {
+                if (err.code === 11000) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Duplicate board name",
+                    });
+                }
                 console.log(err);
                 return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
                     error: "Failed to create board",
                 });
             }

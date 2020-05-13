@@ -21,6 +21,12 @@ class TaskListController {
         this.router = express.Router();
         this.updateOrder = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { sourceID, destinationID, sourceIndex, destinationIndex } = req.body;
+            if (sourceID == null || destinationID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing Fields",
+                });
+            }
             try {
                 if (sourceID === destinationID) {
                     // same list
@@ -83,10 +89,28 @@ class TaskListController {
         this.updateTaskList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const taskListID = req.params.taskListID;
             const { name } = req.body;
+            if (taskListID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid taskListID",
+                });
+            }
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
-                yield taskListModel_1.default.findByIdAndUpdate(taskListID, {
+                const updateResult = yield taskListModel_1.default.findByIdAndUpdate(taskListID, {
                     name: name,
                 });
+                if (updateResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid taskListID",
+                    });
+                }
                 return res
                     .status(http_status_codes_1.OK)
                     .json({ status: true, response: "taskList Updated" });
@@ -101,8 +125,20 @@ class TaskListController {
         });
         this.deleteTaskList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const taskListID = req.params.taskListID;
+            if (taskListID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid taskListID",
+                });
+            }
             try {
-                yield taskListModel_1.default.findByIdAndRemove(taskListID);
+                const deleteResult = yield taskListModel_1.default.findByIdAndRemove(taskListID);
+                if (deleteResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid taskListID",
+                    });
+                }
                 return res
                     .status(http_status_codes_1.OK)
                     .json({ status: true, response: "taskList Deleted" });
@@ -117,6 +153,18 @@ class TaskListController {
         });
         this.createTaskList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { name, boardID } = req.body;
+            if (boardID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid boardID",
+                });
+            }
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
                 const result = yield taskListModel_1.default.create({
                     name,

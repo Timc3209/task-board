@@ -14,6 +14,10 @@ const taskSchema = new mongoose.Schema({
     type: Number,
     required: "number is required",
   },
+  created: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model("Task", taskSchema);

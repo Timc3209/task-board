@@ -23,12 +23,40 @@ class BoardController {
     const boardID = req.params.boardID;
     const { name } = req.body;
 
+    if (boardID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid boardID",
+      });
+    }
+
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
+
     try {
-      await Board.findByIdAndUpdate(boardID, {
+      const updateResult = await Board.findByIdAndUpdate(boardID, {
         name: name,
       });
+
+      if (updateResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid boardID",
+        });
+      }
+
       return res.status(OK).json({ status: true, response: "Board Updated" });
     } catch (err) {
+      if (err.code === 11000) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Duplicate board name",
+        });
+      }
       console.log(err);
       return res.status(BAD_REQUEST).json({
         status: false,
@@ -39,8 +67,23 @@ class BoardController {
 
   deleteBoard = async (req: Request, res: Response) => {
     const boardID = req.params.boardID;
+
+    if (boardID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid boardID",
+      });
+    }
+
     try {
-      await Board.findByIdAndRemove(boardID);
+      const deleteResult = await Board.findByIdAndRemove(boardID);
+
+      if (deleteResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid boardID",
+        });
+      }
       return res.status(OK).json({ status: true, response: "Board Deleted" });
     } catch (err) {
       console.log(err);
@@ -67,6 +110,13 @@ class BoardController {
   getBoard = async (req: Request, res: Response) => {
     const boardID = req.params.boardID;
 
+    if (boardID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid boardID",
+      });
+    }
+
     try {
       const board = await Board.findById(boardID).populate({
         path: "taskList",
@@ -85,6 +135,13 @@ class BoardController {
   createBoard = async (req: Request, res: Response) => {
     const { name } = req.body;
 
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
+
     try {
       const board = new Board({ name, taskList: [] });
       const result = await board.save();
@@ -92,8 +149,15 @@ class BoardController {
         .status(OK)
         .json({ status: true, response: "Board Created", boardID: result._id });
     } catch (err) {
+      if (err.code === 11000) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Duplicate board name",
+        });
+      }
       console.log(err);
       return res.status(BAD_REQUEST).json({
+        status: false,
         error: "Failed to create board",
       });
     }

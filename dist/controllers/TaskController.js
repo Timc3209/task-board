@@ -20,10 +20,28 @@ class TaskController {
         this.updateTask = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const taskID = req.params.taskID;
             const { name } = req.body;
+            if (taskID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid taskID",
+                });
+            }
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
-                yield taskModel_1.default.findByIdAndUpdate(taskID, {
+                const updateResult = yield taskModel_1.default.findByIdAndUpdate(taskID, {
                     name: name,
                 });
+                if (updateResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid name",
+                    });
+                }
                 return res.status(http_status_codes_1.OK).json({ status: true, response: "task Updated" });
             }
             catch (err) {
@@ -36,8 +54,20 @@ class TaskController {
         });
         this.deleteTask = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const taskID = req.params.taskID;
+            if (taskID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid taskID",
+                });
+            }
             try {
-                yield taskModel_1.default.findByIdAndRemove(taskID);
+                const deleteResult = yield taskModel_1.default.findByIdAndRemove(taskID);
+                if (deleteResult == null) {
+                    return res.status(http_status_codes_1.BAD_REQUEST).json({
+                        status: false,
+                        error: "Invalid taskID",
+                    });
+                }
                 return res.status(http_status_codes_1.OK).json({ status: true, response: "task Deleted" });
             }
             catch (err) {
@@ -50,6 +80,18 @@ class TaskController {
         });
         this.createTask = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { name, listID } = req.body;
+            if (listID == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Invalid listID",
+                });
+            }
+            if (name == null) {
+                return res.status(http_status_codes_1.BAD_REQUEST).json({
+                    status: false,
+                    error: "Missing name",
+                });
+            }
             try {
                 const taskList = yield taskListModel_1.default.findById(listID);
                 const sortOrder = taskList.tasks.length + 1;

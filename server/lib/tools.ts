@@ -20,3 +20,11 @@ export const moveArray = (
   const result = { sourceItems: sourceClone, destinationItems: destClone };
   return result;
 };
+
+export const randomName = () => {
+  const result =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  return result;
+};

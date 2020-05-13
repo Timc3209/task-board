@@ -8,7 +8,7 @@ import TaskListController from "./controllers/taskListController";
 import TaskController from "./controllers/taskController";
 
 const port = process.env.PORT || 8000;
-const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/new";
+const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/TaskBoard";
 
 mongoose.connect(databaseUrl, {
   useNewUrlParser: true,
@@ -42,4 +42,6 @@ const app = new App({
   ],
 });
 
-app.listen();
+const server = app.listen();
+
+export default server;

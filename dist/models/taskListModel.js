@@ -8,6 +8,10 @@ const taskListSchema = new mongoose.Schema({
     },
     board: { type: mongoose.Schema.Types.ObjectId, ref: "Board" },
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+    created: {
+        type: Date,
+        default: Date.now,
+    },
 });
 exports.default = mongoose.model("TaskList", taskListSchema);
 //# sourceMappingURL=taskListModel.js.map

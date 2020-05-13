@@ -22,10 +22,32 @@ class TaskController {
     const taskID = req.params.taskID;
     const { name } = req.body;
 
+    if (taskID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid taskID",
+      });
+    }
+
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
+
     try {
-      await Task.findByIdAndUpdate(taskID, {
+      const updateResult = await Task.findByIdAndUpdate(taskID, {
         name: name,
       });
+
+      if (updateResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid name",
+        });
+      }
+
       return res.status(OK).json({ status: true, response: "task Updated" });
     } catch (err) {
       console.log(err);
@@ -39,8 +61,23 @@ class TaskController {
   deleteTask = async (req: Request, res: Response) => {
     const taskID = req.params.taskID;
 
+    if (taskID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid taskID",
+      });
+    }
+
     try {
-      await Task.findByIdAndRemove(taskID);
+      const deleteResult = await Task.findByIdAndRemove(taskID);
+
+      if (deleteResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid taskID",
+        });
+      }
+
       return res.status(OK).json({ status: true, response: "task Deleted" });
     } catch (err) {
       console.log(err);
@@ -53,6 +90,20 @@ class TaskController {
 
   createTask = async (req: Request, res: Response) => {
     const { name, listID } = req.body;
+
+    if (listID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid listID",
+      });
+    }
+
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
 
     try {
       const taskList: any = await TaskList.findById(listID);

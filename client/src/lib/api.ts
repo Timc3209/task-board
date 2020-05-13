@@ -22,6 +22,9 @@ export const fetchApi = async (
     return await response.json();
   } catch (err) {
     console.log(err);
-    return { status: false };
+    if (err.error) {
+      return { status: false, error: err.error };
+    }
+    return { status: false, error: "" };
   }
 };

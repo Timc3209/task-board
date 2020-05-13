@@ -24,6 +24,13 @@ class TaskListController {
   updateOrder = async (req: Request, res: Response) => {
     const { sourceID, destinationID, sourceIndex, destinationIndex } = req.body;
 
+    if (sourceID == null || destinationID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing Fields",
+      });
+    }
+
     try {
       if (sourceID === destinationID) {
         // same list
@@ -107,10 +114,32 @@ class TaskListController {
     const taskListID = req.params.taskListID;
     const { name } = req.body;
 
+    if (taskListID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid taskListID",
+      });
+    }
+
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
+
     try {
-      await TaskList.findByIdAndUpdate(taskListID, {
+      const updateResult = await TaskList.findByIdAndUpdate(taskListID, {
         name: name,
       });
+
+      if (updateResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid taskListID",
+        });
+      }
+
       return res
         .status(OK)
         .json({ status: true, response: "taskList Updated" });
@@ -125,8 +154,24 @@ class TaskListController {
 
   deleteTaskList = async (req: Request, res: Response) => {
     const taskListID = req.params.taskListID;
+
+    if (taskListID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid taskListID",
+      });
+    }
+
     try {
-      await TaskList.findByIdAndRemove(taskListID);
+      const deleteResult = await TaskList.findByIdAndRemove(taskListID);
+
+      if (deleteResult == null) {
+        return res.status(BAD_REQUEST).json({
+          status: false,
+          error: "Invalid taskListID",
+        });
+      }
+
       return res
         .status(OK)
         .json({ status: true, response: "taskList Deleted" });
@@ -141,6 +186,20 @@ class TaskListController {
 
   createTaskList = async (req: Request, res: Response) => {
     const { name, boardID } = req.body;
+
+    if (boardID == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Invalid boardID",
+      });
+    }
+
+    if (name == null) {
+      return res.status(BAD_REQUEST).json({
+        status: false,
+        error: "Missing name",
+      });
+    }
 
     try {
       const result = await TaskList.create({

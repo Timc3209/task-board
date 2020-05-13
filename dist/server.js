@@ -9,7 +9,7 @@ const boardController_1 = require("./controllers/boardController");
 const taskListController_1 = require("./controllers/taskListController");
 const taskController_1 = require("./controllers/taskController");
 const port = process.env.PORT || 8000;
-const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/new";
+const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/TaskBoard";
 mongoose.connect(databaseUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -37,5 +37,6 @@ const app = new app_1.default({
         logger_1.default,
     ],
 });
-app.listen();
+const server = app.listen();
+exports.default = server;
 //# sourceMappingURL=server.js.map

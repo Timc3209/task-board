@@ -23,6 +23,7 @@ interface States {
   modalOpen: boolean;
   modalAction: string;
   showError: boolean;
+  errorMessage: string;
 }
 
 class Boards extends React.Component<Props, States> {
@@ -32,6 +33,7 @@ class Boards extends React.Component<Props, States> {
     modalOpen: false,
     modalAction: "",
     showError: false,
+    errorMessage: "",
   };
 
   componentDidMount() {
@@ -67,14 +69,16 @@ class Boards extends React.Component<Props, States> {
     if (apiResult.status === true) {
       this.props.deleteBoard({ id: boardID });
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Please try again" });
   };
 
   editBoard = async () => {
     const { boardID, boardName } = this.state;
 
     if (boardName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -89,14 +93,16 @@ class Boards extends React.Component<Props, States> {
     if (apiResult.status === true) {
       this.props.editBoard(data);
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Board name in use" });
   };
 
   createBoard = async () => {
     const { boardName } = this.state;
 
     if (boardName === "") {
-      this.setState({ showError: true });
+      this.setState({ showError: true, errorMessage: "Please enter name" });
       return false;
     }
 
@@ -113,7 +119,9 @@ class Boards extends React.Component<Props, States> {
 
       this.props.addBoard(data);
       this.closeModal();
+      return true;
     }
+    this.setState({ showError: true, errorMessage: "Board name in use" });
   };
 
   onChange = (event: any) => {
@@ -142,6 +150,7 @@ class Boards extends React.Component<Props, States> {
       boardName: "",
       boardID: "0",
       showError: false,
+      errorMessage: "",
     });
   };
 
@@ -219,7 +228,7 @@ class Boards extends React.Component<Props, States> {
               value={boardName}
               onChange={this.onChange}
               showError={this.state.showError}
-              errorMessage="Please enter a name"
+              errorMessage={this.state.errorMessage}
             />
           )}
         </CrudModal>
