@@ -2,7 +2,7 @@
 
 ## Description
 
-SimpleTaskBoard is a task manager app built with react.
+A kanban taskboard built with React and Redux.
 
 ## Deployment Link
 
