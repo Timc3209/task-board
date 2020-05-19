@@ -1,12 +1,28 @@
-import { LOGIN_SUCCESS, LOGOUT, SET_CURRENT_BOARD, AuthState } from "../types";
+import {
+  LOGIN_SUCCESS,
+  LOGOUT,
+  SET_CURRENT_BOARD,
+  AuthState,
+  AuthActionTypes,
+} from "../types";
 
-const INITIAL_STATE: AuthState = {
-  loggedIn: false,
+export const INITIAL_STATE: AuthState = {
+  id: "0",
+  username: "",
   token: "",
-  currentBoard: "0",
+  currentBoardID: "0",
+  loggedIn: false,
 };
 
-export default (state = INITIAL_STATE, action: any) => {
+export const INITIAL_STATE_LOGGED: AuthState = {
+  id: "demo",
+  username: "demo",
+  token: "demo",
+  currentBoardID: "0",
+  loggedIn: true,
+};
+
+export function reducer(state = INITIAL_STATE_LOGGED, action: AuthActionTypes) {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
@@ -16,11 +32,11 @@ export default (state = INITIAL_STATE, action: any) => {
     case SET_CURRENT_BOARD:
       return {
         ...state,
-        currentBoard: action.payload,
+        currentBoardID: action.payload,
       };
     case LOGOUT:
       return { ...INITIAL_STATE };
     default:
       return state;
   }
-};
+}

@@ -1,4 +1,8 @@
-export const reorderArray = (list: any, startIndex: any, endIndex: any) => {
+export const reorderArray = (
+  list: Array<object>,
+  startIndex: number,
+  endIndex: number
+) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -6,10 +10,10 @@ export const reorderArray = (list: any, startIndex: any, endIndex: any) => {
 };
 
 export const moveArray = (
-  source: any,
-  destination: any,
-  startIndex: any,
-  endIndex: any
+  source: Array<object>,
+  destination: Array<object>,
+  startIndex: number,
+  endIndex: number
 ) => {
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);

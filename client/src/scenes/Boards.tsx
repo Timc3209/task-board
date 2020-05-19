@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
-import BootstrapTable from "react-bootstrap-table-next";
+import BootstrapTable, { RowSelectionType } from "react-bootstrap-table-next";
 import { loadBoards, addBoard, editBoard, deleteBoard } from "../redux/actions";
-import { MainState, BoardState } from "../redux/types";
+import { BoardState } from "../redux/types";
+import { AppState } from "../redux/reducers";
 import Header from "../components/Header";
 import TextInput from "../components/TextInput";
 import CrudModal from "../components/CrudModal";
@@ -63,11 +64,10 @@ class Boards extends React.Component<Props, States> {
 
   deleteBoard = async () => {
     const { boardID } = this.state;
-    this.props.deleteBoard({ id: boardID });
     const apiResult = await fetchApi("board/" + boardID, "DELETE");
 
     if (apiResult.status === true) {
-      this.props.deleteBoard({ id: boardID });
+      this.props.deleteBoard(boardID);
       this.closeModal();
       return true;
     }
@@ -124,17 +124,17 @@ class Boards extends React.Component<Props, States> {
     this.setState({ showError: true, errorMessage: "Board name in use" });
   };
 
-  onChange = (event: any) => {
+  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const key = event.currentTarget.name;
     const value = event.currentTarget.value;
-    this.setState({ [key]: value } as any);
+    this.setState<never>({ [key]: value });
   };
 
   openCreateModal = () => {
     this.setState({ modalOpen: true, modalAction: "Create" });
   };
 
-  openEditModal = (row: any) => {
+  openEditModal = (row: BoardState) => {
     const { id, name } = row;
     this.setState({
       modalOpen: true,
@@ -154,7 +154,7 @@ class Boards extends React.Component<Props, States> {
     });
   };
 
-  actionsFormatter = (cell: any, row: any) => {
+  actionsFormatter = (cell: RowSelectionType, row: BoardState) => {
     return (
       <div className="btn-actions">
         <Button
@@ -184,7 +184,7 @@ class Boards extends React.Component<Props, States> {
         isDummyField: true,
         formatter: this.actionsFormatter,
         headerStyle: () => {
-          return { width: "130px", "text-align": "center" };
+          return { width: "130px" };
         },
       },
     ];
@@ -223,7 +223,7 @@ class Boards extends React.Component<Props, States> {
           ) : (
             <TextInput
               name="boardName"
-              label="Board Name"
+              label="Select Board"
               type="text"
               value={boardName}
               onChange={this.onChange}
@@ -237,7 +237,7 @@ class Boards extends React.Component<Props, States> {
   }
 }
 
-const mapStateToProps = ({ task }: MainState) => {
+const mapStateToProps = ({ task }: AppState) => {
   const { boards } = task;
   return { boards };
 };

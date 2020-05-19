@@ -1,10 +1,24 @@
 import { combineReducers } from "redux";
-import authReducer from "./authReducer";
-import taskReducer from "./taskReducer";
+import * as authReducer from "./authReducer";
+import * as taskReducer from "./taskReducer";
+import { AuthState, TaskState } from "../types";
 
-const rootReducer = combineReducers({
-  auth: authReducer,
-  task: taskReducer,
+export interface AppState {
+  auth: AuthState;
+  task: TaskState;
+}
+
+export const AppInitialState: AppState = {
+  auth: authReducer.INITIAL_STATE,
+  task: taskReducer.INITIAL_STATE,
+};
+
+export const AppInitialStateLogged: AppState = {
+  auth: authReducer.INITIAL_STATE_LOGGED,
+  task: taskReducer.INITIAL_STATE,
+};
+
+export const rootReducer = combineReducers({
+  auth: authReducer.reducer,
+  task: taskReducer.reducer,
 });
-
-export default rootReducer;

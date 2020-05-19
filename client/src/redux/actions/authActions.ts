@@ -1,6 +1,6 @@
-import { LOGIN_SUCCESS, LOGOUT, SET_CURRENT_BOARD } from "../types";
+import { LOGIN_SUCCESS, LOGOUT, SET_CURRENT_BOARD, AuthState } from "../types";
 
-export const loginSuccess = (payload: any) => {
+export const loginSuccess = (payload: AuthState) => {
   return {
     type: LOGIN_SUCCESS,
     payload,
@@ -13,7 +13,7 @@ export const logout = () => {
   };
 };
 
-export const setCurrentBoard = (payload: any) => {
+export const setCurrentBoard = (payload: string) => {
   return {
     type: SET_CURRENT_BOARD,
     payload,

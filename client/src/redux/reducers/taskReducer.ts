@@ -13,13 +13,17 @@ import {
   DELETE_LIST,
   LOGOUT,
   TaskState,
+  TaskActionTypes,
+  BoardState,
+  TaskListState,
+  TaskItemState,
 } from "../types";
 
-const INITIAL_STATE: TaskState = {
+export const INITIAL_STATE: TaskState = {
   boards: [],
 };
 
-export default (state = INITIAL_STATE, action: any) => {
+export function reducer(state = INITIAL_STATE, action: TaskActionTypes) {
   switch (action.type) {
     case LOAD_BOARDS:
       return {
@@ -34,7 +38,7 @@ export default (state = INITIAL_STATE, action: any) => {
     case EDIT_BOARD:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.id
             ? { ...board, name: action.payload.name }
             : board
@@ -44,13 +48,13 @@ export default (state = INITIAL_STATE, action: any) => {
       return {
         ...state,
         boards: state.boards.filter(
-          (board: any) => board.id !== action.payload.id
+          (board: BoardState) => board.id !== action.payload
         ),
       };
     case ADD_LIST:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
@@ -62,13 +66,13 @@ export default (state = INITIAL_STATE, action: any) => {
     case EDIT_LIST:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
-                taskList: board.taskList.map((list: any) =>
-                  list.id === action.payload.id
-                    ? { ...list, name: action.payload.name }
+                taskList: board.taskList.map((list: TaskListState) =>
+                  list.id === action.payload.taskList.id
+                    ? { ...list, name: action.payload.taskList.name }
                     : list
                 ),
               }
@@ -78,12 +82,12 @@ export default (state = INITIAL_STATE, action: any) => {
     case DELETE_LIST:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
                 taskList: board.taskList.filter(
-                  (list: any) => list.id !== action.payload.id
+                  (list: TaskListState) => list.id !== action.payload.id
                 ),
               }
             : board
@@ -92,11 +96,11 @@ export default (state = INITIAL_STATE, action: any) => {
     case ADD_TASK:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
-                taskList: board.taskList.map((list: any) =>
+                taskList: board.taskList.map((list: TaskListState) =>
                   list.id === action.payload.listID
                     ? { ...list, tasks: [...list.tasks, action.payload.task] }
                     : list
@@ -108,15 +112,15 @@ export default (state = INITIAL_STATE, action: any) => {
     case EDIT_TASK:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
-                taskList: board.taskList.map((list: any) =>
+                taskList: board.taskList.map((list: TaskListState) =>
                   list.id === action.payload.listID
                     ? {
                         ...list,
-                        tasks: list.tasks.map((task: any) =>
+                        tasks: list.tasks.map((task: TaskItemState) =>
                           task.id === action.payload.id
                             ? { ...task, name: action.payload.name }
                             : task
@@ -131,16 +135,16 @@ export default (state = INITIAL_STATE, action: any) => {
     case DELETE_TASK:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
-                taskList: board.taskList.map((list: any) =>
+                taskList: board.taskList.map((list: TaskListState) =>
                   list.id === action.payload.listID
                     ? {
                         ...list,
                         tasks: list.tasks.filter(
-                          (task: any) => task.id !== action.payload.id
+                          (task: TaskItemState) => task.id !== action.payload.id
                         ),
                       }
                     : list
@@ -152,7 +156,7 @@ export default (state = INITIAL_STATE, action: any) => {
     case LOAD_BOARD:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.id
             ? {
                 ...board,
@@ -165,11 +169,11 @@ export default (state = INITIAL_STATE, action: any) => {
     case MOVE_TASK:
       return {
         ...state,
-        boards: state.boards.map((board: any) =>
+        boards: state.boards.map((board: BoardState) =>
           board.id === action.payload.boardID
             ? {
                 ...board,
-                taskList: board.taskList.map((list: any) =>
+                taskList: board.taskList.map((list: TaskListState) =>
                   list.id === action.payload.id
                     ? { ...list, tasks: action.payload.tasks }
                     : list
@@ -183,4 +187,4 @@ export default (state = INITIAL_STATE, action: any) => {
     default:
       return state;
   }
-};
+}

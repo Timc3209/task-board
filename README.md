@@ -1,4 +1,4 @@
-# SimpleTaskBoard
+# Task Board
 
 ## Description
 
@@ -24,6 +24,6 @@ A deployed version of this project may be found [here.](https://simple-task-boar
 
 ## Screenshots:
 
-![Alt text](https://github.com/Timc3209/SimpleTaskBoard/blob/master/examples/TaskBoard.png)
-![Alt text](https://github.com/Timc3209/SimpleTaskBoard/blob/master/examples/DragNDrop.png)
-![Alt text](https://github.com/Timc3209/SimpleTaskBoard/blob/master/examples/AddTask.png)
+![Alt text](https://raw.githubusercontent.com/Timc3209/task-board/master/examples/TaskBoard.png)
+![Alt text](https://raw.githubusercontent.com/Timc3209/task-board/master/examples/DragNDrop.png)
+![Alt text](https://raw.githubusercontent.com/Timc3209/task-board/master/examples/AddTask.png)

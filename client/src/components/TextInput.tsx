@@ -1,15 +1,5 @@
 import React from "react";
-import { FormGroup, Label, Input, FormFeedback } from "reactstrap";
-
-interface MyProps {
-  name: string;
-  label: string;
-  type: any;
-  value: string;
-  onChange: (event: any) => void;
-  showError?: boolean;
-  errorMessage?: string;
-}
+import { FormGroup, Label, Input, FormFeedback, InputProps } from "reactstrap";
 
 const TextInput = ({
   label,
@@ -19,7 +9,7 @@ const TextInput = ({
   onChange,
   showError,
   errorMessage,
-}: MyProps) => (
+}: InputProps) => (
   <FormGroup>
     <Label>{label}</Label>
     <Input

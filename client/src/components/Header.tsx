@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { logout } from "../redux/actions";
-import { MainState } from "../redux/types";
+import { AppState } from "../redux/reducers";
 import {
   Collapse,
   Navbar,
@@ -77,7 +77,7 @@ class Header extends React.Component<Props, States> {
   }
 }
 
-const mapStateToProps = ({ auth }: MainState) => {
+const mapStateToProps = ({ auth }: AppState) => {
   const { loggedIn } = auth;
   return { loggedIn };
 };

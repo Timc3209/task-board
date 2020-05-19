@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import {
   addList,
   editList,
@@ -14,7 +14,8 @@ import {
   moveTask,
   setCurrentBoard,
 } from "../redux/actions";
-import { MainState, BoardState } from "../redux/types";
+import { BoardState, TaskListState, TaskItemState } from "../redux/types";
+import { AppState } from "../redux/reducers";
 import Header from "../components/Header";
 import SelectInput from "../components/SelectInput";
 import TextInput from "../components/TextInput";
@@ -24,8 +25,8 @@ import { fetchApi } from "../lib/api";
 import { reorderArray, moveArray } from "../lib/tools";
 
 interface Props {
-  currentBoard: string;
-  taskLists: any;
+  currentBoardID: string;
+  currentBoard: BoardState;
   boards: Array<BoardState>;
   setCurrentBoard: typeof setCurrentBoard;
   addList: typeof addList;
@@ -87,14 +88,14 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   deleteList = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listID } = this.state;
 
     const apiResult = await fetchApi("taskList/" + listID, "DELETE");
 
     if (apiResult.status === true) {
       const data = {
-        boardID: currentBoard,
+        boardID: currentBoardID,
         id: listID,
       };
       this.props.deleteList(data);
@@ -105,7 +106,7 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   editList = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listID, listName } = this.state;
 
     if (listName === "") {
@@ -119,12 +120,12 @@ class TaskBoard extends React.Component<Props, States> {
 
     if (apiResult.status === true) {
       const data = {
-        boardID: currentBoard,
         id: listID,
         name: listName,
+        tasks: [],
       };
 
-      this.props.editList(data);
+      this.props.editList({ boardID: currentBoardID, taskList: data });
       this.closeModal();
       return true;
     }
@@ -132,7 +133,7 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   createList = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listName } = this.state;
 
     if (listName === "") {
@@ -142,7 +143,7 @@ class TaskBoard extends React.Component<Props, States> {
 
     const apiResult = await fetchApi("taskList", "POST", {
       name: listName,
-      boardID: currentBoard,
+      boardID: currentBoardID,
     });
 
     if (apiResult.status === true) {
@@ -154,7 +155,7 @@ class TaskBoard extends React.Component<Props, States> {
         tasks: [],
       };
 
-      this.props.addList({ boardID: currentBoard, taskList: data });
+      this.props.addList({ boardID: currentBoardID, taskList: data });
       this.closeModal();
       return true;
     }
@@ -162,14 +163,14 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   deleteTask = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listID, taskID } = this.state;
 
     const apiResult = await fetchApi("task/" + taskID, "DELETE");
 
     if (apiResult.status === true) {
       const data = {
-        boardID: currentBoard,
+        boardID: currentBoardID,
         listID: listID,
         id: taskID,
       };
@@ -182,7 +183,7 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   editTask = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listID, taskID, taskName } = this.state;
 
     if (taskName === "") {
@@ -196,7 +197,7 @@ class TaskBoard extends React.Component<Props, States> {
 
     if (apiResult.status === true) {
       const data = {
-        boardID: currentBoard,
+        boardID: currentBoardID,
         listID: listID,
         id: taskID,
         name: taskName,
@@ -210,7 +211,7 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   createTask = async () => {
-    const { currentBoard } = this.props;
+    const { currentBoardID } = this.props;
     const { listID, taskName } = this.state;
 
     if (taskName === "") {
@@ -231,7 +232,11 @@ class TaskBoard extends React.Component<Props, States> {
         name: taskName,
       };
 
-      this.props.addTask({ boardID: currentBoard, listID: listID, task: data });
+      this.props.addTask({
+        boardID: currentBoardID,
+        listID: listID,
+        task: data,
+      });
       this.closeModal();
       return true;
     }
@@ -246,7 +251,7 @@ class TaskBoard extends React.Component<Props, States> {
     });
   };
 
-  openCreateTaskModal = (row: any) => {
+  openCreateTaskModal = (row: TaskListState) => {
     const { id, name } = row;
     this.setState({
       modalOpen: true,
@@ -257,7 +262,7 @@ class TaskBoard extends React.Component<Props, States> {
     });
   };
 
-  openEditModal = (row: any) => {
+  openEditModal = (row: TaskListState) => {
     const { id, name } = row;
     this.setState({
       modalOpen: true,
@@ -268,7 +273,7 @@ class TaskBoard extends React.Component<Props, States> {
     });
   };
 
-  openEditTaskModal = (row: any, task: any) => {
+  openEditTaskModal = (row: TaskListState, task: TaskItemState) => {
     const { id, name } = row;
     this.setState({
       modalOpen: true,
@@ -294,21 +299,21 @@ class TaskBoard extends React.Component<Props, States> {
     });
   };
 
-  onChange = (event: any) => {
+  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const key = event.currentTarget.name;
     const value = event.currentTarget.value;
-    this.setState({ [key]: value } as any);
+    this.setState<never>({ [key]: value });
   };
 
-  onDefaultBoardChange = (event: any) => {
+  onDefaultBoardChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const boardID = event.currentTarget.value;
     this.props.setCurrentBoard(boardID);
     this.loadBoard(boardID);
   };
 
   loadDefaultBoard = () => {
-    const { currentBoard } = this.props;
-    this.loadBoard(currentBoard);
+    const { currentBoardID } = this.props;
+    this.loadBoard(currentBoardID);
   };
 
   loadBoard = async (boardID: string) => {
@@ -334,8 +339,8 @@ class TaskBoard extends React.Component<Props, States> {
     }
   };
 
-  onDragEnd = (result: any) => {
-    const { currentBoard, taskLists } = this.props;
+  onDragEnd = (result: DropResult) => {
+    const { currentBoardID, currentBoard } = this.props;
     const { source, destination } = result;
 
     // dropped outside the list
@@ -344,7 +349,7 @@ class TaskBoard extends React.Component<Props, States> {
       return;
     }
 
-    const boardID = currentBoard;
+    const taskLists = currentBoard.taskList;
     const sourceID = source.droppableId;
     const destinationID = destination.droppableId;
     const sourceIndex = source.index;
@@ -360,19 +365,17 @@ class TaskBoard extends React.Component<Props, States> {
     // same list.
     if (source.droppableId === destination.droppableId) {
       // get tasklist.
-      const list = getTasks(taskLists, destinationID);
+      const tasks = getTasks(taskLists, destinationID);
       // reorder items.
-      const tasks: any = reorderArray(list, sourceIndex, destinationIndex);
-
+      const newTasks = reorderArray(tasks, sourceIndex, destinationIndex);
       // update redux
       this.props.moveTask({
-        boardID: boardID,
+        boardID: currentBoardID,
         id: destinationID,
-        tasks: tasks,
+        tasks: newTasks,
       });
 
-      console.log(tasks);
-      console.log(this.props.boards);
+      fetchApi("taskList/updateOrder", "POST", data);
       return;
     }
 
@@ -387,18 +390,18 @@ class TaskBoard extends React.Component<Props, States> {
       destinationIndex
     );
 
-    const { sourceItems, destinationItems }: any = moveResult;
+    const { sourceItems, destinationItems } = moveResult;
 
     // update redux source items
     this.props.moveTask({
-      boardID: boardID,
+      boardID: currentBoardID,
       id: sourceID,
       tasks: sourceItems,
     });
 
     // update redux destination items
     this.props.moveTask({
-      boardID: boardID,
+      boardID: currentBoardID,
       id: destinationID,
       tasks: destinationItems,
     });
@@ -407,7 +410,7 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   render() {
-    const { boards, currentBoard, taskLists } = this.props;
+    const { boards, currentBoardID, currentBoard } = this.props;
     const {
       listName,
       taskName,
@@ -423,13 +426,13 @@ class TaskBoard extends React.Component<Props, States> {
             <SelectInput
               name="defaultBoard"
               label="Board Name"
-              value={currentBoard}
+              value={currentBoardID}
               selectLabel="Select Board"
               options={boards}
               onChange={this.onDefaultBoardChange}
             />
           </div>
-          {this.props.currentBoard !== "0" && (
+          {this.props.currentBoardID !== "0" && (
             <Button color="success" onClick={this.openCreateModal}>
               Create List
             </Button>
@@ -437,22 +440,25 @@ class TaskBoard extends React.Component<Props, States> {
         </div>
         <div className="d-flex ml-2">
           <DragDropContext onDragEnd={this.onDragEnd}>
-            {taskLists &&
-              taskLists.map((list: any, index: any) => {
-                return (
-                  <TaskList
-                    key={index}
-                    id={list.id}
-                    name={list.name}
-                    tasks={list.tasks}
-                    showEdit={() => this.openEditModal(list)}
-                    showAddTask={() => this.openCreateTaskModal(list)}
-                    showEditTask={(task: any) =>
-                      this.openEditTaskModal(list, task)
-                    }
-                  />
-                );
-              })}
+            {currentBoard &&
+              currentBoard.taskList &&
+              currentBoard.taskList.map(
+                (list: TaskListState, index: number) => {
+                  return (
+                    <TaskList
+                      key={index}
+                      id={list.id}
+                      name={list.name}
+                      tasks={list.tasks}
+                      showEdit={() => this.openEditModal(list)}
+                      showAddTask={() => this.openCreateTaskModal(list)}
+                      showEditTask={(task: TaskItemState) =>
+                        this.openEditTaskModal(list, task)
+                      }
+                    />
+                  );
+                }
+              )}
           </DragDropContext>
         </div>
         <CrudModal
@@ -499,26 +505,27 @@ class TaskBoard extends React.Component<Props, States> {
   }
 }
 
-const getTasks = (taskLists: any, taskListID: string) => {
+const getTasks = (taskLists: Array<TaskListState>, taskListID: string) => {
   const row = taskLists.filter(
-    (taskList: any) => taskList.id === taskListID
+    (taskList: TaskListState) => taskList.id === taskListID
   )[0];
   const tasks = row == null ? [] : row.tasks;
   return tasks;
 };
 
-const getTaskLists = (boards: Array<BoardState>, boardID: string) => {
-  const row = boards.filter((board: BoardState) => board.id === boardID)[0];
-  const taskLists = row == null ? [] : row.taskList;
-  return taskLists;
+const getCurrentBoard = (boards: Array<BoardState>, boardID: string) => {
+  const currentBoard = boards.filter(
+    (board: BoardState) => board.id === boardID
+  )[0];
+  return currentBoard;
 };
 
-const mapStateToProps = ({ task, auth }: MainState) => {
+const mapStateToProps = ({ task, auth }: AppState) => {
   const { boards } = task;
-  const { currentBoard } = auth;
-  const taskLists = getTaskLists(boards, currentBoard);
+  const { currentBoardID } = auth;
+  const currentBoard = getCurrentBoard(boards, currentBoardID);
 
-  return { boards, currentBoard, taskLists };
+  return { boards, currentBoardID, currentBoard };
 };
 
 const mapDispatchToProps = {

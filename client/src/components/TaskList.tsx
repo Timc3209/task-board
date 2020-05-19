@@ -2,14 +2,15 @@ import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { Button } from "reactstrap";
 import TaskItem from "./TaskItem";
+import { TaskItemState } from "../redux/types";
 
 interface MyProps {
   name: string;
   id: string;
-  tasks: any;
-  showEdit: any;
-  showAddTask: any;
-  showEditTask: any;
+  tasks: Array<TaskItemState>;
+  showEdit: () => void;
+  showAddTask: () => void;
+  showEditTask: (task: TaskItemState) => void;
 }
 
 const grid = 8;
@@ -46,7 +47,7 @@ const TaskList = ({
         </div>
         <div className="task-container">
           {tasks &&
-            tasks.map((task: any, index: any) => (
+            tasks.map((task: TaskItemState, index: number) => (
               <TaskItem
                 key={index}
                 id={task.id}

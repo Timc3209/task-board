@@ -5,11 +5,12 @@ interface MyProps {
   id: string;
   name: string;
   index: number;
-  editTask: any;
+  editTask: () => void;
 }
 
 const grid = 8;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   position: "relative",
   userSelect: "none",

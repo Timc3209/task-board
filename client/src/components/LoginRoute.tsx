@@ -1,7 +1,11 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, RouteProps } from "react-router-dom";
 
-const LoginRoute = ({ loggedIn, ...props }: any) =>
+interface Props extends RouteProps {
+  loggedIn: boolean;
+}
+
+const LoginRoute = ({ loggedIn, ...props }: Props) =>
   loggedIn ? <Redirect to="/taskBoard" /> : <Route {...props} />;
 
 export default LoginRoute;

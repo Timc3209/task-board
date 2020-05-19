@@ -3,7 +3,7 @@ const apiUrl = "/api/";
 export const fetchApi = async (
   endPoint: string,
   method: string,
-  data: any = {}
+  data: object = {}
 ) => {
   try {
     const bodyData =

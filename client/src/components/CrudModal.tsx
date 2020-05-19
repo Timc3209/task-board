@@ -7,8 +7,8 @@ interface Props {
   modalType: string;
   submitModal: () => void;
   closeModal: () => void;
-  deleteAction?: any;
-  children: any;
+  deleteAction: () => void;
+  children: React.ReactNode;
 }
 
 interface States {

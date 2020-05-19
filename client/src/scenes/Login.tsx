@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
 import { loginSuccess } from "../redux/actions";
-import { MainState } from "../redux/types";
+import { AuthState } from "../redux/types";
+import { AppState } from "../redux/reducers";
 import TextInput from "../components/TextInput";
 
 interface Props {
@@ -38,17 +39,24 @@ class Login extends React.Component<Props, States> {
     }
 
     if (username === "demo" && password === "demo") {
-      this.props.loginSuccess("demo");
+      const user: AuthState = {
+        id: "demo",
+        username: "demo",
+        token: "demo",
+        currentBoardID: "0",
+        loggedIn: true,
+      };
+      this.props.loginSuccess(user);
       return true;
     }
 
     // show fail
   };
 
-  onChange = (event: any) => {
+  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const key = event.currentTarget.name;
     const value = event.currentTarget.value;
-    this.setState({ [key]: value } as any);
+    this.setState<never>({ [key]: value });
   };
 
   render() {
@@ -91,7 +99,7 @@ class Login extends React.Component<Props, States> {
   }
 }
 
-const mapStateToProps = ({ auth }: MainState) => {
+const mapStateToProps = ({ auth }: AppState) => {
   const { loggedIn } = auth;
   return { loggedIn };
 };
