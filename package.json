@@ -12,5 +12,8 @@
   "cacheDirectories": [
     "node_modules",
     "server/node_modules"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
 }
