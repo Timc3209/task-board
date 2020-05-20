@@ -1,1 +1,1 @@
-npm start --prefix server
+node server/dist/server.js
