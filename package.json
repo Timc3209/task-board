@@ -1,8 +1,11 @@
 {
   "name": "task-board",
   "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "postinstall": "cd server && yarn install",
-    "start": "(cd server && yarn start)"
+    "start": "(cd server && node dist/server.js)"
   }
 }
