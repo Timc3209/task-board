@@ -6,6 +6,11 @@
   "license": "ISC",
   "scripts": {
     "postinstall": "cd server && yarn install",
-    "start": "(cd server && node dist/server.js)"
-  }
+    "build": "(cd server && yarn build)",
+    "start": "(cd server && yarn start)"
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "server/node_modules"
+  ]
 }
