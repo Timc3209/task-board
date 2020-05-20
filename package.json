@@ -2,6 +2,7 @@
   "name": "task-board",
   "version": "0.1.0",
   "scripts": {
-    "postinstall": "npm install --prefix server"
+    "postinstall": "cd server && yarn install",
+    "start": "(cd server && yarn start)"
   }
 }
