@@ -1,5 +1,4 @@
 .DS_Store
-build/
 node_modules/
-client/build
+server/node_modules/
 client/node_modules/
