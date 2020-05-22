@@ -1,35 +1,22 @@
 import App from "./app";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import * as mongoose from "mongoose";
 import loggerMiddleware from "./middleware/logger";
+import UserController from "./controllers/userController";
+import AuthController from "./controllers/authController";
 import BoardController from "./controllers/boardController";
 import TaskListController from "./controllers/taskListController";
 import TaskController from "./controllers/taskController";
+import connectDB from "./lib/database";
+import config from "./lib/config";
 
-const port = process.env.PORT || 8000;
-const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/TaskBoard";
-
-mongoose.connect(databaseUrl, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
-
-mongoose.connection.on("error", () => {
-  throw new Error(`unable to connect to database: ${databaseUrl}`);
-});
-
-mongoose.connection.on("connected", () => {
-  console.log(`connected to database: ${databaseUrl}`);
-});
-
-mongoose.set("toJSON", { virtuals: true });
+connectDB(config.databaseUrl);
 
 const app = new App({
-  port: port,
+  port: config.port,
   controllers: [
+    new UserController(),
+    new AuthController(),
     new BoardController(),
     new TaskListController(),
     new TaskController(),

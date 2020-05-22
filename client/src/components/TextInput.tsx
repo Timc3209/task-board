@@ -9,6 +9,8 @@ const TextInput = ({
   onChange,
   showError,
   errorMessage,
+  rows,
+  maxLength,
 }: InputProps) => (
   <FormGroup>
     <Label>{label}</Label>
@@ -18,6 +20,8 @@ const TextInput = ({
       value={value}
       onChange={onChange}
       invalid={showError}
+      rows={rows}
+      maxLength={maxLength}
     />
     <FormFeedback>{errorMessage}</FormFeedback>
   </FormGroup>

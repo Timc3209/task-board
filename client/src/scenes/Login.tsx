@@ -5,6 +5,7 @@ import { loginSuccess } from "../redux/actions";
 import { AuthState } from "../redux/types";
 import { AppState } from "../redux/reducers";
 import TextInput from "../components/TextInput";
+import { fetchData } from "../lib/api";
 
 interface Props {
   loggedIn: boolean;
@@ -16,6 +17,7 @@ interface States {
   password: string;
   showError: boolean;
   errorInput: string;
+  errorMessage: string;
 }
 
 class Login extends React.Component<Props, States> {
@@ -24,39 +26,57 @@ class Login extends React.Component<Props, States> {
     password: "demo",
     showError: false,
     errorInput: "",
+    errorMessage: "",
   };
 
-  checkLogin = () => {
+  checkLogin = async () => {
     const { username, password } = this.state;
 
     if (username === "") {
-      this.setState({ showError: true, errorInput: "username" });
+      this.setState({
+        showError: true,
+        errorInput: "username",
+        errorMessage: "Please enter username",
+      });
       return false;
     }
     if (password === "") {
-      this.setState({ showError: true, errorInput: "password" });
+      this.setState({
+        showError: true,
+        errorInput: "password",
+        errorMessage: "Please enter password",
+      });
       return false;
     }
 
-    if (username === "demo" && password === "demo") {
-      const user: AuthState = {
-        id: "demo",
-        username: "demo",
-        token: "demo",
-        currentBoardID: "0",
+    const apiResult = await fetchData("auth/login", "POST", {
+      username,
+      password,
+    });
+
+    if (apiResult.status === true) {
+      const { user, token } = apiResult;
+      const authData: AuthState = {
+        id: user.id,
+        username: user.name,
+        token: token,
+        currentBoardID: user.currentBoard ? user.currentBoard : "0",
         loggedIn: true,
       };
-      this.props.loginSuccess(user);
+      this.props.loginSuccess(authData);
       return true;
     }
-
-    // show fail
+    this.setState({
+      showError: true,
+      errorInput: "password",
+      errorMessage: "Invalid username or password",
+    });
   };
 
   onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const key = event.currentTarget.name;
     const value = event.currentTarget.value;
-    this.setState<never>({ [key]: value });
+    this.setState<never>({ [key]: value, showError: false });
   };
 
   render() {
@@ -75,7 +95,7 @@ class Login extends React.Component<Props, States> {
           showError={
             this.state.errorInput === "username" && this.state.showError
           }
-          errorMessage="Please enter a username"
+          errorMessage={this.state.errorMessage}
         />
         <TextInput
           name="password"
@@ -86,7 +106,7 @@ class Login extends React.Component<Props, States> {
           showError={
             this.state.errorInput === "password" && this.state.showError
           }
-          errorMessage="Please enter a password"
+          errorMessage={this.state.errorMessage}
         />
         <Button
           className="btn-lg btn-dark btn-block mt-4"

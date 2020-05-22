@@ -10,10 +10,15 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 
 interface Props {
   logout: typeof logout;
+  username: string;
 }
 
 interface States {
@@ -29,14 +34,11 @@ class Header extends React.Component<Props, States> {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
-  doLogout = () => {
-    this.props.logout();
-  };
-
   render() {
     const { isOpen } = this.state;
+    const { username, logout } = this.props;
     return (
-      <Navbar color="light" light expand="md" fixed="top">
+      <Navbar color="dark" dark expand="md" fixed="top">
         <NavbarBrand href="/">Task Board</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
@@ -59,17 +61,14 @@ class Header extends React.Component<Props, States> {
                 Boards
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                onClick={this.doLogout}
-                exact
-                to="#"
-                className="nav-link"
-                activeClassName="logout"
-              >
-                Logout
-              </NavLink>
-            </NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                {username}
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem onClick={logout}>Logout</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </Nav>
         </Collapse>
       </Navbar>
@@ -78,8 +77,8 @@ class Header extends React.Component<Props, States> {
 }
 
 const mapStateToProps = ({ auth }: AppState) => {
-  const { loggedIn } = auth;
-  return { loggedIn };
+  const { loggedIn, username } = auth;
+  return { loggedIn, username };
 };
 
 const mapDispatchToProps = {

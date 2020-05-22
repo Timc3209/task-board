@@ -13,6 +13,7 @@ const express = require("express");
 const http_status_codes_1 = require("http-status-codes");
 const taskListModel_1 = require("../models/taskListModel");
 const taskModel_1 = require("../models/taskModel");
+const secureRoute_1 = require("../middleware/secureRoute");
 class TaskController {
     constructor() {
         this.path = "/task";
@@ -119,9 +120,9 @@ class TaskController {
         this.initRoutes();
     }
     initRoutes() {
-        this.router.post("/", this.createTask);
-        this.router.delete("/:taskID", this.deleteTask);
-        this.router.put("/:taskID", this.updateTask);
+        this.router.post("/", secureRoute_1.default, this.createTask);
+        this.router.delete("/:taskID", secureRoute_1.default, this.deleteTask);
+        this.router.put("/:taskID", secureRoute_1.default, this.updateTask);
     }
 }
 exports.default = TaskController;

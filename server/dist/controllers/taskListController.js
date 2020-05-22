@@ -14,6 +14,7 @@ const http_status_codes_1 = require("http-status-codes");
 const boardModel_1 = require("../models/boardModel");
 const taskListModel_1 = require("../models/taskListModel");
 const taskModel_1 = require("../models/taskModel");
+const secureRoute_1 = require("../middleware/secureRoute");
 const tools_1 = require("../lib/tools");
 class TaskListController {
     constructor() {
@@ -190,10 +191,10 @@ class TaskListController {
         this.initRoutes();
     }
     initRoutes() {
-        this.router.post("/", this.createTaskList);
-        this.router.delete("/:taskListID", this.deleteTaskList);
-        this.router.put("/:taskListID", this.updateTaskList);
-        this.router.post("/updateOrder", this.updateOrder);
+        this.router.post("/", secureRoute_1.default, this.createTaskList);
+        this.router.delete("/:taskListID", secureRoute_1.default, this.deleteTaskList);
+        this.router.put("/:taskListID", secureRoute_1.default, this.updateTaskList);
+        this.router.post("/updateOrder", secureRoute_1.default, this.updateOrder);
     }
 }
 exports.default = TaskListController;

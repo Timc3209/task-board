@@ -2,6 +2,7 @@ import * as express from "express";
 import { Request, Response } from "express";
 import { OK, BAD_REQUEST } from "http-status-codes";
 import Board from "../models/boardModel";
+import secureRoute from "../middleware/secureRoute";
 
 class BoardController {
   public path = "/board";
@@ -12,11 +13,11 @@ class BoardController {
   }
 
   public initRoutes() {
-    this.router.post("/", this.createBoard);
-    this.router.get("/", this.getAllBoards);
-    this.router.get("/:boardID", this.getBoard);
-    this.router.delete("/:boardID", this.deleteBoard);
-    this.router.put("/:boardID", this.updateBoard);
+    this.router.post("/", secureRoute, this.createBoard);
+    this.router.get("/", secureRoute, this.getAllBoards);
+    this.router.get("/:boardID", secureRoute, this.getBoard);
+    this.router.delete("/:boardID", secureRoute, this.deleteBoard);
+    this.router.put("/:boardID", secureRoute, this.updateBoard);
   }
 
   updateBoard = async (req: Request, res: Response) => {

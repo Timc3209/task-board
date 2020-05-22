@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
-const boardSchema = new mongoose.Schema({
+const BoardSchema = new mongoose.Schema({
     name: {
         type: String,
         required: "Text is required",
@@ -15,5 +15,5 @@ const boardSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
-exports.default = mongoose.model("Board", boardSchema);
+exports.default = mongoose.model("Board", BoardSchema);
 //# sourceMappingURL=boardModel.js.map

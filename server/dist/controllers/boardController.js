@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const http_status_codes_1 = require("http-status-codes");
 const boardModel_1 = require("../models/boardModel");
+const secureRoute_1 = require("../middleware/secureRoute");
 class BoardController {
     constructor() {
         this.path = "/board";
@@ -151,11 +152,11 @@ class BoardController {
         this.initRoutes();
     }
     initRoutes() {
-        this.router.post("/", this.createBoard);
-        this.router.get("/", this.getAllBoards);
-        this.router.get("/:boardID", this.getBoard);
-        this.router.delete("/:boardID", this.deleteBoard);
-        this.router.put("/:boardID", this.updateBoard);
+        this.router.post("/", secureRoute_1.default, this.createBoard);
+        this.router.get("/", secureRoute_1.default, this.getAllBoards);
+        this.router.get("/:boardID", secureRoute_1.default, this.getBoard);
+        this.router.delete("/:boardID", secureRoute_1.default, this.deleteBoard);
+        this.router.put("/:boardID", secureRoute_1.default, this.updateBoard);
     }
 }
 exports.default = BoardController;

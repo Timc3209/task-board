@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
-const taskListSchema = new mongoose.Schema({
+const TaskListSchema = new mongoose.Schema({
     name: {
         type: String,
         required: "Text is required",
@@ -13,5 +13,5 @@ const taskListSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
-exports.default = mongoose.model("TaskList", taskListSchema);
+exports.default = mongoose.model("TaskList", TaskListSchema);
 //# sourceMappingURL=taskListModel.js.map

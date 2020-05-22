@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 
-const boardSchema = new mongoose.Schema({
+const BoardSchema = new mongoose.Schema({
   name: {
     type: String,
     required: "Text is required",
@@ -15,4 +15,4 @@ const boardSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Board", boardSchema);
+export default mongoose.model("Board", BoardSchema);

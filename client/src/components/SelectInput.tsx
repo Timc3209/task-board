@@ -25,7 +25,13 @@ const SelectInput = ({
 }: MyProps) => (
   <FormGroup>
     <Label>{label}</Label>
-    <Input type="select" name={name} value={value} onChange={onChange}>
+    <Input
+      type="select"
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="pointer"
+    >
       <option value="0">{selectLabel}</option>
       {options.map((row: OptionTypes, index: number) => {
         return (

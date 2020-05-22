@@ -22,12 +22,16 @@ export const INITIAL_STATE_LOGGED: AuthState = {
   loggedIn: true,
 };
 
-export function reducer(state = INITIAL_STATE_LOGGED, action: AuthActionTypes) {
+export function reducer(state = INITIAL_STATE, action: AuthActionTypes) {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
         ...state,
-        loggedIn: true,
+        id: action.payload.id,
+        username: action.payload.username,
+        token: action.payload.token,
+        currentBoardID: action.payload.currentBoardID,
+        loggedIn: action.payload.loggedIn,
       };
     case SET_CURRENT_BOARD:
       return {

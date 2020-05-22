@@ -106,7 +106,9 @@ class Boards extends React.Component<Props, States> {
       return false;
     }
 
-    const apiResult = await fetchApi("board", "POST", { name: boardName });
+    const apiResult = await fetchApi("board", "POST", {
+      name: boardName,
+    });
 
     if (apiResult.status === true) {
       const boardID = apiResult.boardID;
@@ -229,6 +231,7 @@ class Boards extends React.Component<Props, States> {
               onChange={this.onChange}
               showError={this.state.showError}
               errorMessage={this.state.errorMessage}
+              maxLength={25}
             />
           )}
         </CrudModal>

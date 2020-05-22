@@ -3,29 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("./app");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const logger_1 = require("./middleware/logger");
+const userController_1 = require("./controllers/userController");
+const authController_1 = require("./controllers/authController");
 const boardController_1 = require("./controllers/boardController");
 const taskListController_1 = require("./controllers/taskListController");
 const taskController_1 = require("./controllers/taskController");
-const port = process.env.PORT || 8000;
-const databaseUrl = process.env.MONGOLAB_URI || "mongodb://localhost/TaskBoard";
-mongoose.connect(databaseUrl, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-});
-mongoose.connection.on("error", () => {
-    throw new Error(`unable to connect to database: ${databaseUrl}`);
-});
-mongoose.connection.on("connected", () => {
-    console.log(`connected to database: ${databaseUrl}`);
-});
-mongoose.set("toJSON", { virtuals: true });
+const database_1 = require("./lib/database");
+const config_1 = require("./lib/config");
+database_1.default(config_1.default.databaseUrl);
 const app = new app_1.default({
-    port: port,
+    port: config_1.default.port,
     controllers: [
+        new userController_1.default(),
+        new authController_1.default(),
         new boardController_1.default(),
         new taskListController_1.default(),
         new taskController_1.default(),

@@ -64,16 +64,20 @@
   right: 2px;
 }
 
-.bottom-task-actions {
-  position: absolute;
-  bottom: 10px;
-  left: 5px;
+.pointer {
+  cursor: pointer;
 }
 
 .relative {
   position: relative;
 }
 
-.task-container {
-  padding-bottom: 50px;
+.task-create-container {
+  padding: 16px 8px;
+  margin: 0 0 12px 0;
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  border: 1px solid #fff;
+  text-align: center;
+  cursor: pointer;
 }

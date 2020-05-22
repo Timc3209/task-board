@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { OK, BAD_REQUEST } from "http-status-codes";
 import TaskList from "../models/taskListModel";
 import Task from "../models/taskModel";
+import secureRoute from "../middleware/secureRoute";
 
 class TaskController {
   public path = "/task";
@@ -13,9 +14,9 @@ class TaskController {
   }
 
   public initRoutes() {
-    this.router.post("/", this.createTask);
-    this.router.delete("/:taskID", this.deleteTask);
-    this.router.put("/:taskID", this.updateTask);
+    this.router.post("/", secureRoute, this.createTask);
+    this.router.delete("/:taskID", secureRoute, this.deleteTask);
+    this.router.put("/:taskID", secureRoute, this.updateTask);
   }
 
   updateTask = async (req: Request, res: Response) => {

@@ -8,14 +8,12 @@ interface MyProps {
   editTask: () => void;
 }
 
-const grid = 8;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   position: "relative",
   userSelect: "none",
-  padding: `${grid * 2}px ${grid}px`,
-  margin: `0 0 ${grid}px 0`,
+  padding: `16px 8px`,
+  margin: `0 0 12px 0`,
   background: "#FFF",
   boxShadow: "0 1px 1px rgba(0,0,0, .20)",
   border: "1px solid #fff",

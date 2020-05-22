@@ -4,6 +4,7 @@ import { OK, BAD_REQUEST } from "http-status-codes";
 import Board from "../models/boardModel";
 import TaskList from "../models/taskListModel";
 import Task from "../models/taskModel";
+import secureRoute from "../middleware/secureRoute";
 import { reorderArray, moveArray } from "../lib/tools";
 
 class TaskListController {
@@ -15,10 +16,10 @@ class TaskListController {
   }
 
   public initRoutes() {
-    this.router.post("/", this.createTaskList);
-    this.router.delete("/:taskListID", this.deleteTaskList);
-    this.router.put("/:taskListID", this.updateTaskList);
-    this.router.post("/updateOrder", this.updateOrder);
+    this.router.post("/", secureRoute, this.createTaskList);
+    this.router.delete("/:taskListID", secureRoute, this.deleteTaskList);
+    this.router.put("/:taskListID", secureRoute, this.updateTaskList);
+    this.router.post("/updateOrder", secureRoute, this.updateOrder);
   }
 
   updateOrder = async (req: Request, res: Response) => {

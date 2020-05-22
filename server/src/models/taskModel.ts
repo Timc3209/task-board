@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const TaskSchema = new mongoose.Schema({
   name: {
     type: String,
     required: "Text is required",
@@ -20,4 +20,4 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Task", taskSchema);
+export default mongoose.model("Task", TaskSchema);

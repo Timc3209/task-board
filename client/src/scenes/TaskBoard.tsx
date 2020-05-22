@@ -13,8 +13,14 @@ import {
   loadBoards,
   moveTask,
   setCurrentBoard,
+  loginSuccess,
 } from "../redux/actions";
-import { BoardState, TaskListState, TaskItemState } from "../redux/types";
+import {
+  BoardState,
+  AuthState,
+  TaskListState,
+  TaskItemState,
+} from "../redux/types";
 import { AppState } from "../redux/reducers";
 import Header from "../components/Header";
 import SelectInput from "../components/SelectInput";
@@ -38,6 +44,7 @@ interface Props {
   moveTask: typeof moveTask;
   loadBoard: typeof loadBoard;
   loadBoards: typeof loadBoards;
+  loginSuccess: typeof loginSuccess;
 }
 
 interface States {
@@ -66,8 +73,28 @@ class TaskBoard extends React.Component<Props, States> {
   };
 
   componentDidMount() {
-    this.loadDefaultBoard();
+    this.checkAuth();
   }
+
+  checkAuth = async () => {
+    const apiResult = await fetchApi("auth/verify", "GET");
+
+    if (apiResult.status === true) {
+      const { user, token, boards } = apiResult;
+      const currentBoardID = user.currentBoard ? user.currentBoard : "0";
+      const authData: AuthState = {
+        id: user.id,
+        username: user.name,
+        token: token,
+        currentBoardID: currentBoardID,
+        loggedIn: true,
+      };
+      this.props.loginSuccess(authData);
+      this.props.loadBoards(boards);
+      this.loadBoard(currentBoardID);
+      return true;
+    }
+  };
 
   submitModal = () => {
     const { modalAction, modalType } = this.state;
@@ -309,16 +336,13 @@ class TaskBoard extends React.Component<Props, States> {
     const boardID = event.currentTarget.value;
     this.props.setCurrentBoard(boardID);
     this.loadBoard(boardID);
-  };
 
-  loadDefaultBoard = () => {
-    const { currentBoardID } = this.props;
-    this.loadBoard(currentBoardID);
+    // update current board
+    fetchApi("user/board/" + boardID, "GET");
   };
 
   loadBoard = async (boardID: string) => {
     if (boardID === "0") {
-      this.loadBoards();
       return false;
     }
 
@@ -327,15 +351,6 @@ class TaskBoard extends React.Component<Props, States> {
     if (apiResult.status === true && apiResult.board) {
       const board = apiResult.board;
       this.props.loadBoard(board);
-    }
-  };
-
-  loadBoards = async () => {
-    const apiResult = await fetchApi("board", "GET");
-
-    if (apiResult.status === true) {
-      const boards = apiResult.boards;
-      this.props.loadBoards(boards);
     }
   };
 
@@ -482,6 +497,7 @@ class TaskBoard extends React.Component<Props, States> {
                   onChange={this.onChange}
                   showError={this.state.showError}
                   errorMessage="Please enter a name"
+                  maxLength={25}
                 />
               </div>
             ) : (
@@ -489,12 +505,13 @@ class TaskBoard extends React.Component<Props, States> {
                 <p>List {listName}</p>
                 <TextInput
                   name="taskName"
-                  label="Task Name"
-                  type="text"
+                  label="Task"
+                  type="textarea"
                   value={taskName}
                   onChange={this.onChange}
                   showError={this.state.showError}
                   errorMessage={this.state.errorMessage}
+                  rows={3}
                 />
               </div>
             )}
@@ -539,6 +556,7 @@ const mapDispatchToProps = {
   loadBoards,
   moveTask,
   setCurrentBoard,
+  loginSuccess,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskBoard);
