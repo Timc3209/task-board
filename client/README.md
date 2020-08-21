@@ -2,7 +2,7 @@
 
 ## Description
 
-A kanban taskboard built with React and Redux.
+A kanban style task board with features such as adding, updating and deleting tasks, customizable columns and drag-and-drop.
 
 ## Deployment Link
 
@@ -21,6 +21,14 @@ A deployed version of this project may be found [here.](https://simple-task-boar
 - React / Redux
 - MongoDB / Mongoose
 - NodeJS, Express
+
+## Usage
+
+1. Clone/Download the repo.
+2. Make sure you have MongoDB installed in your system.
+3. Run `cd client`
+4. Run `yarn install`
+5. Run `yarn start` inside the server directory to start a local dev server on port 3000.(http://localhost:30000).
 
 ## Screenshots:
 
